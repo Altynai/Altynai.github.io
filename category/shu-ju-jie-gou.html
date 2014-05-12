@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>Sideways - 数据结构</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">Sideways </a></h1>
+                <nav><ul>
+                    <li class="active"><a href="/category/shu-ju-jie-gou.html">数据结构</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="/04-18.html">04-18</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2013-04-18T00:00:00">
+                Thu 18 April 2013
+        </abbr>
+
+        <address class="vcard author">
+                By <a class="url fn" href="/author/altynai.html">altynai</a>
+        </address>
+<p>In <a href="/category/shu-ju-jie-gou.html">数据结构</a>. </p>
+
+</footer><!-- /.post-info --><h1>Splay Tree</h1>
+<h2>概述</h2>
+<ol>
+<li>节点不记录附加属性</li>
+<li>包含特殊操作<code>splaying</code>：将节点通过<code>左旋 - 右旋</code>的组合调整到根部</li>
+<li>所有操作基于<code>splaying</code></li>
+<li>能使之前访问过的节点下一次能更快速访问</li>
+</ol>
+<h2>操作</h2>
+<ul>
+<li>插入</li>
+<li>传统的<code>BST</code>插入</li>
+<li>
+<p>将新插入的节点旋转到根部</p>
+</li>
+<li>
+<p>删除</p>
+</li>
+<li>和传统<code>BST</code>操作一致：将删除的结点与其左子树中最大的点（或者右子树中最小的点交换）</li>
+<li>将被删除结点的父节点<code>splay</code>到根部</li>
+</ul>
+<h2>C++实现</h2>
+<div class="highlight"><pre><span class="cp">#include &lt;functional&gt;</span>
+
+<span class="cp">#ifndef SPLAY_TREE</span>
+<span class="cp">#define SPLAY_TREE</span>
+
+<span class="k">template</span><span class="o">&lt;</span> <span class="k">typename</span> <span class="n">T</span><span class="p">,</span> <span class="k">typename</span> <span class="n">Comp</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">less</span><span class="o">&lt;</span> <span class="n">T</span> <span class="o">&gt;</span> <span class="o">&gt;</span>
+<span class="k">class</span> <span class="nc">splay_tree</span> <span class="p">{</span>
+<span class="nl">private:</span>
+  <span class="n">Comp</span> <span class="n">comp</span><span class="p">;</span>
+  <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">p_size</span><span class="p">;</span>
+
+  <span class="k">struct</span> <span class="n">node</span> <span class="p">{</span>
+    <span class="n">node</span> <span class="o">*</span><span class="n">left</span><span class="p">,</span> <span class="o">*</span><span class="n">right</span><span class="p">;</span>
+    <span class="c1">// 附加记录父节点</span>
+    <span class="n">node</span> <span class="o">*</span><span class="n">parent</span><span class="p">;</span>
+    <span class="n">T</span> <span class="n">key</span><span class="p">;</span>
+    <span class="n">node</span><span class="p">(</span> <span class="k">const</span> <span class="n">T</span><span class="o">&amp;</span> <span class="n">init</span> <span class="o">=</span> <span class="n">T</span><span class="p">(</span> <span class="p">)</span> <span class="p">)</span> <span class="o">:</span> <span class="n">left</span><span class="p">(</span> <span class="mi">0</span> <span class="p">),</span> <span class="n">right</span><span class="p">(</span> <span class="mi">0</span> <span class="p">),</span> <span class="n">parent</span><span class="p">(</span> <span class="mi">0</span> <span class="p">),</span> <span class="n">key</span><span class="p">(</span> <span class="n">init</span> <span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
+  <span class="p">}</span> <span class="o">*</span><span class="n">root</span><span class="p">;</span>
+
+  <span class="kt">void</span> <span class="nf">left_rotate</span><span class="p">(</span> <span class="n">node</span> <span class="o">*</span><span class="n">x</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="cm">/* 左旋某个节点, 如下如图所示：</span>
+
+<span class="cm">      X             Y</span>
+<span class="cm">     / \           / \</span>
+<span class="cm">    A   Y    =&gt;   X   C</span>
+<span class="cm">       / \       / \</span>
+<span class="cm">      B   C     A   B</span>
+
+<span class="cm">    */</span>
+    <span class="n">node</span> <span class="o">*</span><span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">right</span><span class="p">;</span>
+    <span class="n">x</span><span class="o">-&gt;</span><span class="n">right</span> <span class="o">=</span> <span class="n">y</span><span class="o">-&gt;</span><span class="n">left</span><span class="p">;</span>
+    <span class="k">if</span><span class="p">(</span> <span class="n">y</span><span class="o">-&gt;</span><span class="n">left</span> <span class="p">)</span> <span class="n">y</span><span class="o">-&gt;</span><span class="n">left</span><span class="o">-&gt;</span><span class="n">parent</span> <span class="o">=</span> <span class="n">x</span><span class="p">;</span>
+    <span class="n">y</span><span class="o">-&gt;</span><span class="n">parent</span> <span class="o">=</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span><span class="p">;</span>
+    <span class="k">if</span><span class="p">(</span> <span class="o">!</span><span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span> <span class="p">)</span> <span class="n">root</span> <span class="o">=</span> <span class="n">y</span><span class="p">;</span>
+    <span class="k">else</span> <span class="k">if</span><span class="p">(</span> <span class="n">x</span> <span class="o">==</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span><span class="o">-&gt;</span><span class="n">left</span> <span class="p">)</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span><span class="o">-&gt;</span><span class="n">left</span> <span class="o">=</span> <span class="n">y</span><span class="p">;</span>
+    <span class="k">else</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span><span class="o">-&gt;</span><span class="n">right</span> <span class="o">=</span> <span class="n">y</span><span class="p">;</span>
+    <span class="n">y</span><span class="o">-&gt;</span><span class="n">left</span> <span class="o">=</span> <span class="n">x</span><span class="p">;</span>
+    <span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span> <span class="o">=</span> <span class="n">y</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="kt">void</span> <span class="nf">right_rotate</span><span class="p">(</span> <span class="n">node</span> <span class="o">*</span><span class="n">x</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="cm">/* 右旋某个节点, 如下如图所示：</span>
+
+<span class="cm">        X             Y</span>
+<span class="cm">       / \           / \</span>
+<span class="cm">      Y   C   =&gt;    A   X</span>
+<span class="cm">     / \               / \</span>
+<span class="cm">    A   B             B   C</span>
+
+<span class="cm">    */</span>
+    <span class="n">node</span> <span class="o">*</span><span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">left</span><span class="p">;</span>
+    <span class="n">x</span><span class="o">-&gt;</span><span class="n">left</span> <span class="o">=</span> <span class="n">y</span><span class="o">-&gt;</span><span class="n">right</span><span class="p">;</span>
+    <span class="k">if</span><span class="p">(</span> <span class="n">y</span><span class="o">-&gt;</span><span class="n">right</span> <span class="p">)</span> <span class="n">y</span><span class="o">-&gt;</span><span class="n">right</span><span class="o">-&gt;</span><span class="n">parent</span> <span class="o">=</span> <span class="n">x</span><span class="p">;</span>
+    <span class="n">y</span><span class="o">-&gt;</span><span class="n">parent</span> <span class="o">=</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span><span class="p">;</span>
+    <span class="k">if</span><span class="p">(</span> <span class="o">!</span><span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span> <span class="p">)</span> <span class="n">root</span> <span class="o">=</span> <span class="n">y</span><span class="p">;</span>
+    <span class="k">else</span> <span class="k">if</span><span class="p">(</span> <span class="n">x</span> <span class="o">==</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span><span class="o">-&gt;</span><span class="n">left</span> <span class="p">)</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span><span class="o">-&gt;</span><span class="n">left</span> <span class="o">=</span> <span class="n">y</span><span class="p">;</span>
+    <span class="k">else</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span><span class="o">-&gt;</span><span class="n">right</span> <span class="o">=</span> <span class="n">y</span><span class="p">;</span>
+    <span class="n">y</span><span class="o">-&gt;</span><span class="n">right</span> <span class="o">=</span> <span class="n">x</span><span class="p">;</span>
+    <span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span> <span class="o">=</span> <span class="n">y</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="kt">void</span> <span class="nf">splay</span><span class="p">(</span> <span class="n">node</span> <span class="o">*</span><span class="n">x</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">while</span><span class="p">(</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="c1">// x为第二层结点, 再旋转一次就到根部</span>
+      <span class="k">if</span><span class="p">(</span> <span class="o">!</span><span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span><span class="o">-&gt;</span><span class="n">parent</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span><span class="p">(</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span><span class="o">-&gt;</span><span class="n">left</span> <span class="o">==</span> <span class="n">x</span> <span class="p">)</span> <span class="n">right_rotate</span><span class="p">(</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span> <span class="p">);</span>
+        <span class="k">else</span> <span class="n">left_rotate</span><span class="p">(</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span> <span class="p">);</span>
+
+      <span class="c1">// x和x-&gt;parent都是其父节点的左节点, 对这两个结点分别右旋</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span><span class="p">(</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span><span class="o">-&gt;</span><span class="n">left</span> <span class="o">==</span> <span class="n">x</span> <span class="o">&amp;&amp;</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span><span class="o">-&gt;</span><span class="n">parent</span><span class="o">-&gt;</span><span class="n">left</span> <span class="o">==</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="n">right_rotate</span><span class="p">(</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span><span class="o">-&gt;</span><span class="n">parent</span> <span class="p">);</span>
+        <span class="n">right_rotate</span><span class="p">(</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span> <span class="p">);</span>
+
+      <span class="c1">// x和x-&gt;parent都是其父节点的右节点, 对这两个结点分别左旋</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span><span class="p">(</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span><span class="o">-&gt;</span><span class="n">right</span> <span class="o">==</span> <span class="n">x</span> <span class="o">&amp;&amp;</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span><span class="o">-&gt;</span><span class="n">parent</span><span class="o">-&gt;</span><span class="n">right</span> <span class="o">==</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="n">left_rotate</span><span class="p">(</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span><span class="o">-&gt;</span><span class="n">parent</span> <span class="p">);</span>
+        <span class="n">left_rotate</span><span class="p">(</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span> <span class="p">);</span>
+
+      <span class="c1">// x是其父节点的左节点, x-&gt;parent是其父节点的右节点</span>
+      <span class="c1">// 对x-&gt;parent先右旋, 再左旋</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span><span class="p">(</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span><span class="o">-&gt;</span><span class="n">left</span> <span class="o">==</span> <span class="n">x</span> <span class="o">&amp;&amp;</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span><span class="o">-&gt;</span><span class="n">parent</span><span class="o">-&gt;</span><span class="n">right</span> <span class="o">==</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="n">right_rotate</span><span class="p">(</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span> <span class="p">);</span>
+        <span class="n">left_rotate</span><span class="p">(</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span> <span class="p">);</span>
+
+      <span class="c1">// x是其父节点的右节点, x-&gt;parent是其父节点的左节点</span>
+      <span class="c1">// 对x-&gt;parent先左旋, 再右旋</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="n">left_rotate</span><span class="p">(</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span> <span class="p">);</span>
+        <span class="n">right_rotate</span><span class="p">(</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span> <span class="p">);</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="kt">void</span> <span class="nf">replace</span><span class="p">(</span> <span class="n">node</span> <span class="o">*</span><span class="n">u</span><span class="p">,</span> <span class="n">node</span> <span class="o">*</span><span class="n">v</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// 将u所在的子树替换成v</span>
+    <span class="k">if</span><span class="p">(</span> <span class="o">!</span><span class="n">u</span><span class="o">-&gt;</span><span class="n">parent</span> <span class="p">)</span> <span class="n">root</span> <span class="o">=</span> <span class="n">v</span><span class="p">;</span>
+    <span class="k">else</span> <span class="k">if</span><span class="p">(</span> <span class="n">u</span> <span class="o">==</span> <span class="n">u</span><span class="o">-&gt;</span><span class="n">parent</span><span class="o">-&gt;</span><span class="n">left</span> <span class="p">)</span> <span class="n">u</span><span class="o">-&gt;</span><span class="n">parent</span><span class="o">-&gt;</span><span class="n">left</span> <span class="o">=</span> <span class="n">v</span><span class="p">;</span>
+    <span class="k">else</span> <span class="n">u</span><span class="o">-&gt;</span><span class="n">parent</span><span class="o">-&gt;</span><span class="n">right</span> <span class="o">=</span> <span class="n">v</span><span class="p">;</span>
+    <span class="k">if</span><span class="p">(</span> <span class="n">v</span> <span class="p">)</span> <span class="n">v</span><span class="o">-&gt;</span><span class="n">parent</span> <span class="o">=</span> <span class="n">u</span><span class="o">-&gt;</span><span class="n">parent</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="n">node</span><span class="o">*</span> <span class="nf">subtree_minimum</span><span class="p">(</span> <span class="n">node</span> <span class="o">*</span><span class="n">u</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// 查找u子树中key最小的结点</span>
+    <span class="k">while</span><span class="p">(</span> <span class="n">u</span><span class="o">-&gt;</span><span class="n">left</span> <span class="p">)</span> <span class="n">u</span> <span class="o">=</span> <span class="n">u</span><span class="o">-&gt;</span><span class="n">left</span><span class="p">;</span>
+    <span class="k">return</span> <span class="n">u</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="n">node</span><span class="o">*</span> <span class="nf">subtree_maximum</span><span class="p">(</span> <span class="n">node</span> <span class="o">*</span><span class="n">u</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// 查找u子树中key最大的结点</span>
+    <span class="k">while</span><span class="p">(</span> <span class="n">u</span><span class="o">-&gt;</span><span class="n">right</span> <span class="p">)</span> <span class="n">u</span> <span class="o">=</span> <span class="n">u</span><span class="o">-&gt;</span><span class="n">right</span><span class="p">;</span>
+    <span class="k">return</span> <span class="n">u</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="nl">public:</span>
+  <span class="n">splay_tree</span><span class="p">(</span> <span class="p">)</span> <span class="o">:</span> <span class="n">root</span><span class="p">(</span> <span class="mi">0</span> <span class="p">),</span> <span class="n">p_size</span><span class="p">(</span> <span class="mi">0</span> <span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
+
+  <span class="kt">void</span> <span class="n">insert</span><span class="p">(</span> <span class="k">const</span> <span class="n">T</span> <span class="o">&amp;</span><span class="n">key</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="n">node</span> <span class="o">*</span><span class="n">z</span> <span class="o">=</span> <span class="n">root</span><span class="p">;</span>
+    <span class="n">node</span> <span class="o">*</span><span class="n">p</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+    <span class="k">while</span><span class="p">(</span> <span class="n">z</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="n">p</span> <span class="o">=</span> <span class="n">z</span><span class="p">;</span>
+      <span class="k">if</span><span class="p">(</span> <span class="n">comp</span><span class="p">(</span> <span class="n">z</span><span class="o">-&gt;</span><span class="n">key</span><span class="p">,</span> <span class="n">key</span> <span class="p">)</span> <span class="p">)</span> <span class="n">z</span> <span class="o">=</span> <span class="n">z</span><span class="o">-&gt;</span><span class="n">right</span><span class="p">;</span>
+      <span class="k">else</span> <span class="n">z</span> <span class="o">=</span> <span class="n">z</span><span class="o">-&gt;</span><span class="n">left</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="n">z</span> <span class="o">=</span> <span class="k">new</span> <span class="n">node</span><span class="p">(</span> <span class="n">key</span> <span class="p">);</span>
+    <span class="n">z</span><span class="o">-&gt;</span><span class="n">parent</span> <span class="o">=</span> <span class="n">p</span><span class="p">;</span>
+
+    <span class="k">if</span><span class="p">(</span> <span class="o">!</span><span class="n">p</span> <span class="p">)</span> <span class="n">root</span> <span class="o">=</span> <span class="n">z</span><span class="p">;</span>
+    <span class="k">else</span> <span class="k">if</span><span class="p">(</span> <span class="n">comp</span><span class="p">(</span> <span class="n">p</span><span class="o">-&gt;</span><span class="n">key</span><span class="p">,</span> <span class="n">z</span><span class="o">-&gt;</span><span class="n">key</span> <span class="p">)</span> <span class="p">)</span> <span class="n">p</span><span class="o">-&gt;</span><span class="n">right</span> <span class="o">=</span> <span class="n">z</span><span class="p">;</span>
+    <span class="k">else</span> <span class="n">p</span><span class="o">-&gt;</span><span class="n">left</span> <span class="o">=</span> <span class="n">z</span><span class="p">;</span>
+
+    <span class="n">splay</span><span class="p">(</span> <span class="n">z</span> <span class="p">);</span>
+    <span class="n">p_size</span><span class="o">++</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="n">node</span><span class="o">*</span> <span class="n">find</span><span class="p">(</span> <span class="k">const</span> <span class="n">T</span> <span class="o">&amp;</span><span class="n">key</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="n">node</span> <span class="o">*</span><span class="n">z</span> <span class="o">=</span> <span class="n">root</span><span class="p">;</span>
+    <span class="k">while</span><span class="p">(</span> <span class="n">z</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span><span class="p">(</span> <span class="n">comp</span><span class="p">(</span> <span class="n">z</span><span class="o">-&gt;</span><span class="n">key</span><span class="p">,</span> <span class="n">key</span> <span class="p">)</span> <span class="p">)</span> <span class="n">z</span> <span class="o">=</span> <span class="n">z</span><span class="o">-&gt;</span><span class="n">right</span><span class="p">;</span>
+      <span class="k">else</span> <span class="k">if</span><span class="p">(</span> <span class="n">comp</span><span class="p">(</span> <span class="n">key</span><span class="p">,</span> <span class="n">z</span><span class="o">-&gt;</span><span class="n">key</span> <span class="p">)</span> <span class="p">)</span> <span class="n">z</span> <span class="o">=</span> <span class="n">z</span><span class="o">-&gt;</span><span class="n">left</span><span class="p">;</span>
+      <span class="k">else</span> <span class="k">return</span> <span class="n">z</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="kt">void</span> <span class="n">erase</span><span class="p">(</span> <span class="k">const</span> <span class="n">T</span> <span class="o">&amp;</span><span class="n">key</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="n">node</span> <span class="o">*</span><span class="n">z</span> <span class="o">=</span> <span class="n">find</span><span class="p">(</span> <span class="n">key</span> <span class="p">);</span>
+    <span class="k">if</span><span class="p">(</span> <span class="o">!</span><span class="n">z</span> <span class="p">)</span> <span class="k">return</span><span class="p">;</span>
+
+    <span class="n">splay</span><span class="p">(</span> <span class="n">z</span> <span class="p">);</span>
+
+    <span class="k">if</span><span class="p">(</span> <span class="o">!</span><span class="n">z</span><span class="o">-&gt;</span><span class="n">left</span> <span class="p">)</span> <span class="n">replace</span><span class="p">(</span> <span class="n">z</span><span class="p">,</span> <span class="n">z</span><span class="o">-&gt;</span><span class="n">right</span> <span class="p">);</span>
+    <span class="k">else</span> <span class="nf">if</span><span class="p">(</span> <span class="o">!</span><span class="n">z</span><span class="o">-&gt;</span><span class="n">right</span> <span class="p">)</span> <span class="n">replace</span><span class="p">(</span> <span class="n">z</span><span class="p">,</span> <span class="n">z</span><span class="o">-&gt;</span><span class="n">left</span> <span class="p">);</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="n">node</span> <span class="o">*</span><span class="n">y</span> <span class="o">=</span> <span class="n">subtree_minimum</span><span class="p">(</span> <span class="n">z</span><span class="o">-&gt;</span><span class="n">right</span> <span class="p">);</span>
+      <span class="k">if</span><span class="p">(</span> <span class="n">y</span><span class="o">-&gt;</span><span class="n">parent</span> <span class="o">!=</span> <span class="n">z</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="n">replace</span><span class="p">(</span> <span class="n">y</span><span class="p">,</span> <span class="n">y</span><span class="o">-&gt;</span><span class="n">right</span> <span class="p">);</span>
+        <span class="n">y</span><span class="o">-&gt;</span><span class="n">right</span> <span class="o">=</span> <span class="n">z</span><span class="o">-&gt;</span><span class="n">right</span><span class="p">;</span>
+        <span class="n">y</span><span class="o">-&gt;</span><span class="n">right</span><span class="o">-&gt;</span><span class="n">parent</span> <span class="o">=</span> <span class="n">y</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="n">replace</span><span class="p">(</span> <span class="n">z</span><span class="p">,</span> <span class="n">y</span> <span class="p">);</span>
+      <span class="n">y</span><span class="o">-&gt;</span><span class="n">left</span> <span class="o">=</span> <span class="n">z</span><span class="o">-&gt;</span><span class="n">left</span><span class="p">;</span>
+      <span class="n">y</span><span class="o">-&gt;</span><span class="n">left</span><span class="o">-&gt;</span><span class="n">parent</span> <span class="o">=</span> <span class="n">y</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">delete</span> <span class="n">z</span><span class="p">;</span>
+    <span class="n">p_size</span><span class="o">--</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">const</span> <span class="n">T</span><span class="o">&amp;</span> <span class="n">minimum</span><span class="p">(</span> <span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">subtree_minimum</span><span class="p">(</span> <span class="n">root</span> <span class="p">)</span><span class="o">-&gt;</span><span class="n">key</span><span class="p">;</span> <span class="p">}</span>
+  <span class="k">const</span> <span class="n">T</span><span class="o">&amp;</span> <span class="n">maximum</span><span class="p">(</span> <span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">subtree_maximum</span><span class="p">(</span> <span class="n">root</span> <span class="p">)</span><span class="o">-&gt;</span><span class="n">key</span><span class="p">;</span> <span class="p">}</span>
+
+  <span class="kt">bool</span> <span class="n">empty</span><span class="p">(</span> <span class="p">)</span> <span class="k">const</span> <span class="p">{</span> <span class="k">return</span> <span class="n">root</span> <span class="o">==</span> <span class="mi">0</span><span class="p">;</span> <span class="p">}</span>
+  <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">size</span><span class="p">(</span> <span class="p">)</span> <span class="k">const</span> <span class="p">{</span> <span class="k">return</span> <span class="n">p_size</span><span class="p">;</span> <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="cp">#endif </span><span class="c1">// SPLAY_TREE</span>
+</pre></div>                </article>
+<p class="paginator">
+    Page 1 / 1
+</p>
+            </aside><!-- /#featured -->
+            </ol><!-- /#posts-list -->
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com/">Pelican</a></li>
+                            <li><a href="http://python.org/">Python.org</a></li>
+                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                            <li><a href="#">You can modify those links in your config file</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="#">You can add links in your config file</a></li>
+                            <li><a href="#">Another social link</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>
