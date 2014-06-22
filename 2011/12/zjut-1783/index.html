@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- <link rel="stylesheet/less" type="text/css" href="http://localhost:8000/theme/css/style.less">
+  <script src="http://localhost:8000/theme/js/less-1.3.3.min.js" type="text/javascript"></script> test -->
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/theme/css/style.css"> 
+
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/theme/css/pygments.css">
+  <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=PT+Sans|PT+Serif|PT+Mono">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width; initial-scale=1.0">
+  <meta name="author" content="Altynai">
+  <meta name="description" content="Posts and writings by Altynai">
+  <link rel="shortcut icon" href="http://localhost:8000/theme/images/favicon.ico" type="image/x-icon" />
+
+<meta name="keywords" content="ACM">
+
+  <title>
+ZJUT 1783 线段树 lazy标记  </title>
+
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+        <a href="http://localhost:8000">
+        <img src="http://localhost:8000/theme/images/logo.jpg" alt="logo">
+      </a>
+      <h2><a href="http://localhost:8000">Sideways</a></h2>
+      <p class="tagline">Reflections on life, code, movie, and the craft of writing..</p>
+      <div id="social_links">
+	<ul id="social_list">
+        <li><a href="https://github.com/Altynai" rel='me' target="_blank"><i class="icon-github icon-2x"></i></a></li>
+        <li><a href="http://weibo.com/u/2164187874" rel='me' target="_blank"><i class="icon-weibo icon-2x"></i></a></li>
+	</ul>
+      </div>
+      <ul>
+        <li><a  href="http://localhost:8000/pages/about-me.html">关于我</a></li>
+        <li><a  href="http://localhost:8000/archives.html">Archives</a></li>
+       </ul>
+    </div>
+    <div class="overlay">
+    </div>
+  </aside>
+
+  <main>
+     <header>
+<p>Posted on Mon 19 December 2011</p>
+    </header>
+<article>
+  <div id="article_title">
+    <h1><a href="http://localhost:8000/2011/12/zjut-1783/">ZJUT 1783 线段树 lazy标记</a></h1>
+  </div>
+  <div id="article_text">
+    <p><span style="color: #ff00ff;">【ZJUT
+1783】</span><a href="http://acm.zjut.edu.cn/ShowProblem.aspx?ShowID=1783">http://acm.zjut.edu.cn/ShowProblem.aspx?ShowID=1783</a></p>
+<p>今天圣诞赛现场赛的B题。坑爹的<code>push_down</code>函数写错了，卡了一个小时。</p>
+<p>题目的意思很简单，就是在某个区间插入一个等差数列，然后查询某区间的和，所以我想到的是用low和up来维护等差数列的首项和末项，因为对于一个固定的区间，这个等差数列是唯一的。然后就是要lazy标记，方法和经典的"成段更新求和"类似，关键还是<code>push_down</code>函数千万不能写错！</p>
+<div class="highlight"><pre><span class="cp">#define N 100005</span>
+<span class="cp">#define ll long long</span>
+<span class="cp">#define eps 1e-7</span>
+
+<span class="cp">#define lchild(id) (id&lt;&lt;1)</span>
+<span class="cp">#define rchild(id) ((id&lt;&lt;1)|1)</span>
+<span class="k">typedef</span> <span class="kt">long</span> <span class="kt">long</span> <span class="n">type</span><span class="p">;</span>
+
+<span class="kt">int</span> <span class="n">n</span><span class="p">,</span><span class="n">m</span><span class="p">;</span>
+<span class="k">struct</span> <span class="n">Node</span><span class="p">{</span>
+    <span class="n">type</span> <span class="n">low</span><span class="p">,</span><span class="n">up</span><span class="p">,</span><span class="n">sum</span><span class="p">;</span><span class="c1">//low记录当前等差数列首项，up记录末项</span>
+    <span class="kt">int</span> <span class="n">l</span><span class="p">,</span><span class="n">r</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="nf">length</span><span class="p">(){</span><span class="k">return</span> <span class="n">r</span><span class="o">-</span><span class="n">l</span><span class="o">+</span><span class="mi">1</span><span class="p">;}</span>
+<span class="p">}</span><span class="n">seg</span><span class="p">[</span><span class="n">N</span><span class="o">&lt;&lt;</span><span class="mi">2</span><span class="p">];</span>
+
+<span class="c1">//计算首项为f，末项为e，长度len的等差数列的和</span>
+<span class="n">type</span> <span class="nf">cal</span><span class="p">(</span><span class="n">type</span> <span class="n">f</span><span class="p">,</span><span class="n">type</span> <span class="n">e</span><span class="p">,</span><span class="kt">int</span> <span class="n">len</span><span class="p">){</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">f</span><span class="o">+</span><span class="n">e</span><span class="p">)</span><span class="o">*</span><span class="n">len</span><span class="o">/</span><span class="mi">2</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">//a+=b</span>
+<span class="kr">inline</span> <span class="kt">void</span> <span class="nf">add</span><span class="p">(</span><span class="n">type</span><span class="o">&amp;</span> <span class="n">a</span><span class="p">,</span><span class="n">type</span> <span class="n">b</span><span class="p">){</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">a</span><span class="o">==-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">a</span><span class="o">=</span><span class="n">b</span><span class="p">;</span>
+    <span class="k">else</span>
+        <span class="n">a</span><span class="o">+=</span><span class="n">b</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">//计算首项为f，末项为e，长度len的等差数列的下标为id号的值</span>
+<span class="n">type</span> <span class="nf">cal</span><span class="p">(</span><span class="n">type</span> <span class="n">f</span><span class="p">,</span><span class="n">type</span> <span class="n">e</span><span class="p">,</span><span class="kt">int</span> <span class="n">len</span><span class="p">,</span><span class="kt">int</span> <span class="n">id</span><span class="p">){</span>
+    <span class="n">type</span> <span class="n">d</span><span class="o">=</span><span class="p">(</span><span class="n">e</span><span class="o">-</span><span class="n">f</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">len</span><span class="o">-</span><span class="mi">1</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">f</span><span class="o">+</span><span class="n">d</span><span class="o">*</span><span class="n">id</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">//计算首项为f，末项为e，长度len的等差数列的前n个的和</span>
+<span class="n">type</span> <span class="nf">calsum</span><span class="p">(</span><span class="n">type</span> <span class="n">f</span><span class="p">,</span><span class="n">type</span> <span class="n">e</span><span class="p">,</span><span class="kt">int</span> <span class="n">len</span><span class="p">,</span><span class="kt">int</span> <span class="n">n</span><span class="p">){</span>
+    <span class="n">type</span> <span class="n">d</span><span class="o">=</span><span class="p">(</span><span class="n">e</span><span class="o">-</span><span class="n">f</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">len</span><span class="o">-</span><span class="mi">1</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">f</span><span class="o">*</span><span class="n">n</span><span class="o">+</span><span class="n">d</span><span class="o">*</span><span class="n">n</span><span class="o">*</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="cm">/*</span>
+<span class="cm">比赛的时候这里的向下更新写错了。。。 = = 坑爹卡了一个多小时。</span>
+<span class="cm">错的地方就是，lchild(id).sum+=id等差数列的前lchild(id).length()个的和。</span>
+<span class="cm">rchild(id).sum+=id等差数列的后rchild(id).length()个的和。</span>
+<span class="cm">*/</span>
+
+<span class="kt">void</span> <span class="nf">push_down</span><span class="p">(</span><span class="kt">int</span> <span class="n">id</span><span class="p">){</span>
+    <span class="n">type</span> <span class="n">tmp</span><span class="p">;</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">low</span><span class="o">!=-</span><span class="mi">1</span><span class="p">){</span>
+
+        <span class="n">add</span><span class="p">(</span><span class="n">seg</span><span class="p">[</span><span class="n">lchild</span><span class="p">(</span><span class="n">id</span><span class="p">)].</span><span class="n">low</span><span class="p">,</span><span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">low</span><span class="p">);</span>
+        <span class="n">tmp</span><span class="o">=</span><span class="n">cal</span><span class="p">(</span><span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">low</span><span class="p">,</span><span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">up</span><span class="p">,</span><span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">length</span><span class="p">(),</span><span class="n">seg</span><span class="p">[</span><span class="n">lchild</span><span class="p">(</span><span class="n">id</span><span class="p">)].</span><span class="n">length</span><span class="p">()</span><span class="o">-</span><span class="mi">1</span><span class="p">);</span>
+        <span class="n">add</span><span class="p">(</span><span class="n">seg</span><span class="p">[</span><span class="n">lchild</span><span class="p">(</span><span class="n">id</span><span class="p">)].</span><span class="n">up</span><span class="p">,</span><span class="n">tmp</span><span class="p">);</span>
+
+        <span class="n">seg</span><span class="p">[</span><span class="n">lchild</span><span class="p">(</span><span class="n">id</span><span class="p">)].</span><span class="n">sum</span><span class="o">+=</span><span class="n">calsum</span><span class="p">(</span><span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">low</span><span class="p">,</span><span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">up</span><span class="p">,</span><span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">length</span><span class="p">(),</span><span class="n">seg</span><span class="p">[</span><span class="n">lchild</span><span class="p">(</span><span class="n">id</span><span class="p">)].</span><span class="n">length</span><span class="p">());</span>
+
+        <span class="n">tmp</span><span class="o">=</span><span class="n">cal</span><span class="p">(</span><span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">low</span><span class="p">,</span><span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">up</span><span class="p">,</span><span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">length</span><span class="p">(),</span><span class="n">seg</span><span class="p">[</span><span class="n">lchild</span><span class="p">(</span><span class="n">id</span><span class="p">)].</span><span class="n">length</span><span class="p">());</span>
+        <span class="n">add</span><span class="p">(</span><span class="n">seg</span><span class="p">[</span><span class="n">rchild</span><span class="p">(</span><span class="n">id</span><span class="p">)].</span><span class="n">low</span><span class="p">,</span><span class="n">tmp</span><span class="p">);</span>
+        <span class="n">add</span><span class="p">(</span><span class="n">seg</span><span class="p">[</span><span class="n">rchild</span><span class="p">(</span><span class="n">id</span><span class="p">)].</span><span class="n">up</span><span class="p">,</span><span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">up</span><span class="p">);</span>
+        <span class="n">seg</span><span class="p">[</span><span class="n">rchild</span><span class="p">(</span><span class="n">id</span><span class="p">)].</span><span class="n">sum</span><span class="o">+=</span><span class="n">calsum</span><span class="p">(</span><span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">low</span><span class="p">,</span><span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">up</span><span class="p">,</span><span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">length</span><span class="p">(),</span><span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">length</span><span class="p">())</span>
+                            <span class="o">-</span><span class="n">calsum</span><span class="p">(</span><span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">low</span><span class="p">,</span><span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">up</span><span class="p">,</span><span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">length</span><span class="p">(),</span><span class="n">seg</span><span class="p">[</span><span class="n">lchild</span><span class="p">(</span><span class="n">id</span><span class="p">)].</span><span class="n">length</span><span class="p">());</span>
+
+        <span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">low</span><span class="o">=-</span><span class="mi">1</span><span class="p">;</span>
+        <span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">up</span><span class="o">=-</span><span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">build</span><span class="p">(</span><span class="kt">int</span> <span class="n">id</span><span class="p">,</span><span class="kt">int</span> <span class="n">l</span><span class="p">,</span><span class="kt">int</span> <span class="n">r</span><span class="p">){</span>
+    <span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">l</span><span class="o">=</span><span class="n">l</span><span class="p">;</span>
+    <span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">r</span><span class="o">=</span><span class="n">r</span><span class="p">;</span>
+    <span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">low</span><span class="o">=-</span><span class="mi">1</span><span class="p">;</span>
+    <span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">up</span><span class="o">=-</span><span class="mi">1</span><span class="p">;</span>
+
+    <span class="k">if</span><span class="p">(</span><span class="n">l</span><span class="o">==</span><span class="n">r</span><span class="p">){</span>
+        <span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">sum</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+    <span class="p">}</span><span class="k">else</span><span class="p">{</span>
+        <span class="kt">int</span> <span class="n">mid</span><span class="o">=</span><span class="p">(</span><span class="n">l</span><span class="o">+</span><span class="n">r</span><span class="p">)</span><span class="o">&gt;&gt;</span><span class="mi">1</span><span class="p">;</span>
+        <span class="n">build</span><span class="p">(</span><span class="n">lchild</span><span class="p">(</span><span class="n">id</span><span class="p">),</span><span class="n">l</span><span class="p">,</span><span class="n">mid</span><span class="p">);</span>
+        <span class="n">build</span><span class="p">(</span><span class="n">rchild</span><span class="p">(</span><span class="n">id</span><span class="p">),</span><span class="n">mid</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">r</span><span class="p">);</span>
+        <span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">sum</span><span class="o">=</span><span class="n">seg</span><span class="p">[</span><span class="n">lchild</span><span class="p">(</span><span class="n">id</span><span class="p">)].</span><span class="n">sum</span><span class="o">+</span><span class="n">seg</span><span class="p">[</span><span class="n">rchild</span><span class="p">(</span><span class="n">id</span><span class="p">)].</span><span class="n">sum</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">update</span><span class="p">(</span><span class="kt">int</span> <span class="n">id</span><span class="p">,</span><span class="kt">int</span> <span class="n">l</span><span class="p">,</span><span class="kt">int</span> <span class="n">r</span><span class="p">,</span><span class="kt">int</span> <span class="n">low</span><span class="p">){</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">l</span><span class="o">==</span><span class="n">l</span> <span class="o">&amp;&amp;</span> <span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">r</span><span class="o">==</span><span class="n">r</span><span class="p">){</span>
+        <span class="n">add</span><span class="p">(</span><span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">low</span><span class="p">,</span><span class="n">l</span><span class="o">-</span><span class="n">low</span><span class="p">);</span>
+        <span class="n">add</span><span class="p">(</span><span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">up</span><span class="p">,</span><span class="n">r</span><span class="o">-</span><span class="n">low</span><span class="p">);</span>
+
+        <span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">sum</span><span class="o">+=</span><span class="n">cal</span><span class="p">(</span><span class="n">l</span><span class="o">-</span><span class="n">low</span><span class="p">,</span><span class="n">r</span><span class="o">-</span><span class="n">low</span><span class="p">,</span><span class="n">r</span><span class="o">-</span><span class="n">l</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span>
+        <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">push_down</span><span class="p">(</span><span class="n">id</span><span class="p">);</span>
+    <span class="kt">int</span> <span class="n">mid</span><span class="o">=</span><span class="p">(</span><span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">l</span><span class="o">+</span><span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">r</span><span class="p">)</span><span class="o">&gt;&gt;</span><span class="mi">1</span><span class="p">;</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">r</span><span class="o">&lt;=</span><span class="n">mid</span><span class="p">)</span>
+        <span class="n">update</span><span class="p">(</span><span class="n">lchild</span><span class="p">(</span><span class="n">id</span><span class="p">),</span><span class="n">l</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">low</span><span class="p">);</span>
+    <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">l</span><span class="o">&gt;</span><span class="n">mid</span><span class="p">)</span>
+        <span class="n">update</span><span class="p">(</span><span class="n">rchild</span><span class="p">(</span><span class="n">id</span><span class="p">),</span><span class="n">l</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">low</span><span class="p">);</span>
+    <span class="k">else</span><span class="p">{</span>
+        <span class="n">update</span><span class="p">(</span><span class="n">lchild</span><span class="p">(</span><span class="n">id</span><span class="p">),</span><span class="n">l</span><span class="p">,</span><span class="n">mid</span><span class="p">,</span><span class="n">low</span><span class="p">);</span>
+        <span class="n">update</span><span class="p">(</span><span class="n">rchild</span><span class="p">(</span><span class="n">id</span><span class="p">),</span><span class="n">mid</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">low</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">sum</span><span class="o">=</span><span class="n">seg</span><span class="p">[</span><span class="n">lchild</span><span class="p">(</span><span class="n">id</span><span class="p">)].</span><span class="n">sum</span><span class="o">+</span><span class="n">seg</span><span class="p">[</span><span class="n">rchild</span><span class="p">(</span><span class="n">id</span><span class="p">)].</span><span class="n">sum</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">type</span> <span class="nf">query</span><span class="p">(</span><span class="kt">int</span> <span class="n">id</span><span class="p">,</span><span class="kt">int</span> <span class="n">l</span><span class="p">,</span><span class="kt">int</span> <span class="n">r</span><span class="p">){</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">l</span><span class="o">==</span><span class="n">l</span> <span class="o">&amp;&amp;</span> <span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">r</span><span class="o">==</span><span class="n">r</span><span class="p">){</span>
+        <span class="k">return</span> <span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">sum</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">push_down</span><span class="p">(</span><span class="n">id</span><span class="p">);</span>
+    <span class="kt">int</span> <span class="n">mid</span><span class="o">=</span><span class="p">(</span><span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">l</span><span class="o">+</span><span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">r</span><span class="p">)</span><span class="o">&gt;&gt;</span><span class="mi">1</span><span class="p">;</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">r</span><span class="o">&lt;=</span><span class="n">mid</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">query</span><span class="p">(</span><span class="n">lchild</span><span class="p">(</span><span class="n">id</span><span class="p">),</span><span class="n">l</span><span class="p">,</span><span class="n">r</span><span class="p">);</span>
+    <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">l</span><span class="o">&gt;</span><span class="n">mid</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">query</span><span class="p">(</span><span class="n">rchild</span><span class="p">(</span><span class="n">id</span><span class="p">),</span><span class="n">l</span><span class="p">,</span><span class="n">r</span><span class="p">);</span>
+    <span class="k">else</span> <span class="k">return</span>
+        <span class="n">query</span><span class="p">(</span><span class="n">lchild</span><span class="p">(</span><span class="n">id</span><span class="p">),</span><span class="n">l</span><span class="p">,</span><span class="n">mid</span><span class="p">)</span><span class="o">+</span><span class="n">query</span><span class="p">(</span><span class="n">rchild</span><span class="p">(</span><span class="n">id</span><span class="p">),</span><span class="n">mid</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">r</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="kt">char</span> <span class="n">ch</span><span class="p">[</span><span class="mi">10</span><span class="p">];</span>
+    <span class="kt">int</span> <span class="n">pcas</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">u</span><span class="p">,</span><span class="n">v</span><span class="p">;</span>
+    <span class="k">while</span><span class="p">(</span><span class="n">scanf</span><span class="p">(</span><span class="s">&quot;%d%d&quot;</span><span class="p">,</span><span class="o">&amp;</span><span class="n">n</span><span class="p">,</span><span class="o">&amp;</span><span class="n">m</span><span class="p">)</span><span class="o">!=</span><span class="n">EOF</span><span class="p">){</span>
+        <span class="n">build</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">);</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Case #%d:</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="n">pcas</span><span class="o">++</span><span class="p">);</span>
+        <span class="k">while</span><span class="p">(</span><span class="n">m</span><span class="o">--</span><span class="p">){</span>
+            <span class="n">scanf</span><span class="p">(</span><span class="s">&quot;%s&quot;</span><span class="p">,</span><span class="n">ch</span><span class="p">);</span>
+            <span class="k">if</span><span class="p">(</span><span class="n">ch</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">==</span><span class="sc">&#39;A&#39;</span><span class="p">){</span>
+                <span class="n">scanf</span><span class="p">(</span><span class="s">&quot;%d%d&quot;</span><span class="p">,</span><span class="o">&amp;</span><span class="n">u</span><span class="p">,</span><span class="o">&amp;</span><span class="n">v</span><span class="p">);</span>
+                <span class="n">update</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">u</span><span class="p">,</span><span class="n">v</span><span class="p">,</span><span class="n">u</span><span class="p">);</span>
+            <span class="p">}</span>
+            <span class="k">else</span><span class="p">{</span>
+                <span class="n">scanf</span><span class="p">(</span><span class="s">&quot;%d%d&quot;</span><span class="p">,</span><span class="o">&amp;</span><span class="n">u</span><span class="p">,</span><span class="o">&amp;</span><span class="n">v</span><span class="p">);</span>
+                <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%I64d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="n">query</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">u</span><span class="p">,</span><span class="n">v</span><span class="p">));</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+  </div>
+  <div id="article_meta">
+  	<p>Author: <a href="http://localhost:8000/author/altynai.html">Altynai</a></p>
+    <p>Category: <a href="http://localhost:8000/category/code.html">Code</a></p>
+    <p>Tags:
+      <a href="http://localhost:8000/tag/acm.html">ACM</a>    </p>
+  </div>
+    <div class="comments">
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_identifier = "2011/12/zjut-1783/";
+        var disqus_url = "http://localhost:8000/2011/12/zjut-1783/";
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://Sideways.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+    </div>
+</article>
+
+    <footer>
+	
+<p><a href="http://localhost:8000/" class="button_accent">&larr; Back to Index</a></p>
+    </footer>
+
+    <div id="ending_message">
+      <p>&copy Geoffrey Gimse. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme adapted from pelican-svbhack available on <a href="https://github.com/giulivo/pelican-svbhack" target="_blank">github</a>. Many of the images used on this site are in the Public Domain and available from <a href="http://openclipart.org" target="_blank">Openclipart</a>.</p>
+    </div>
+  </main>
+</body>
+</html>

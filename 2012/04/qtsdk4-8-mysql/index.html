@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- <link rel="stylesheet/less" type="text/css" href="http://localhost:8000/theme/css/style.less">
+  <script src="http://localhost:8000/theme/js/less-1.3.3.min.js" type="text/javascript"></script> test -->
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/theme/css/style.css"> 
+
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/theme/css/pygments.css">
+  <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=PT+Sans|PT+Serif|PT+Mono">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width; initial-scale=1.0">
+  <meta name="author" content="Altynai">
+  <meta name="description" content="Posts and writings by Altynai">
+  <link rel="shortcut icon" href="http://localhost:8000/theme/images/favicon.ico" type="image/x-icon" />
+
+<meta name="keywords" content="C/C++">
+
+  <title>
+QT SDK4.8加载mysql驱动  </title>
+
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+        <a href="http://localhost:8000">
+        <img src="http://localhost:8000/theme/images/logo.jpg" alt="logo">
+      </a>
+      <h2><a href="http://localhost:8000">Sideways</a></h2>
+      <p class="tagline">Reflections on life, code, movie, and the craft of writing..</p>
+      <div id="social_links">
+	<ul id="social_list">
+        <li><a href="https://github.com/Altynai" rel='me' target="_blank"><i class="icon-github icon-2x"></i></a></li>
+        <li><a href="http://weibo.com/u/2164187874" rel='me' target="_blank"><i class="icon-weibo icon-2x"></i></a></li>
+	</ul>
+      </div>
+      <ul>
+        <li><a  href="http://localhost:8000/pages/about-me.html">关于我</a></li>
+        <li><a  href="http://localhost:8000/archives.html">Archives</a></li>
+       </ul>
+    </div>
+    <div class="overlay">
+    </div>
+  </aside>
+
+  <main>
+     <header>
+<p>Posted on Fri 20 April 2012</p>
+    </header>
+<article>
+  <div id="article_title">
+    <h1><a href="http://localhost:8000/2012/04/qtsdk4-8-mysql/">QT SDK4.8加载mysql驱动</a></h1>
+  </div>
+  <div id="article_text">
+    <p>应该有很多人和我一样，在这个蛋疼的问题上纠结了很久 = =
+因为能搜到的信息都是老版本的信息（多是2009年左右的信息），都没什么用。</p>
+<p>直接切入正题。</p>
+<p>先说下【我的环境】<code>win7 + QTSDK4.8 + mysql 5.5 + vs2010(编译器)</code></p>
+<p>我的QT路径为：<strong>E:\QtSDK\Desktop\Qt\4.8.0\msvc2010</strong></p>
+<p>mysql路径为：<strong>E:\Sever_AMD\mysql\MySQL Server 5.5</strong></p>
+<p>具体步骤如下：</p>
+<ul>
+<li>
+<p>先下载 <a href="http://download.qt.nokia.com/qt/source/qt-everywhere-opensource-src-4.8.0.zip">qt-everywhere-opensource-src-4.8.0.zip</a> 解压后把该文件夹下面的整个src文件夹复制到QT路径中</p>
+</li>
+<li>
+<p>复制mysql路径下面的<code>include</code>和<code>lib</code>文件夹到<strong>一个没有空格</strong>的路径下（比如<code>C:\mysql</code>）
+这步的原因是mysql的默认安装路径中含有空格，这会造成qmake的失败 = =
+如果你选的安装路径没有空格，则可以忽略这一步</p>
+</li>
+<li>
+<p>在开始菜单中打开Qt 4.8.0 for Desktop (MSVC 2010)</p>
+</li>
+<li>
+<p>cd到<code>你的QT路径\src\plugins\sqldrivers\mysql</code>（例如我的路径即为<code>E:\QtSDK\Desktop\Qt\4.8.0\msvc2010\src\plugins\sqldrivers\mysql</code>）</p>
+</li>
+<li>
+<p><code>qmake "INCLUDEPATH+=C:\mysql\include" "LIBS+=C:\mysql\lib\libmysql.lib" mysql.pro</code>
+这个时候在<code>你的QT路径\src\plugins\sqldrivers\mysql</code>下面，会出现MakeFile等文件。同时把<code>C:\mysql\lib\libmysql.lib</code>复制到<code>system32</code>中!</p>
+</li>
+<li>
+<p>打开vs2010控制台，cd到<code>你的QT路径\src\plugins\sqldrivers\mysql</code>，然后输入<code>nmake &amp; nmake release</code>，在debug和release文件夹下能找到以下文件，把这4个文件复制到<code>你的QT路径\plugins\sqldrivers</code></p>
+<div class="highlight"><pre><span class="n">qsqlmysqld4</span><span class="p">.</span><span class="n">dll</span>
+<span class="n">qsqlmysqld4</span><span class="p">.</span><span class="n">lib</span>
+<span class="n">qsqlmysql4</span><span class="p">.</span><span class="n">dll</span>
+<span class="n">qsqlmysql4</span><span class="p">.</span><span class="n">lib</span>
+</pre></div>
+
+
+</li>
+<li>
+<p>随便找一个Qt控制台工程，在工程文件.pro中加入一句代码<code>QT += sql</code>，然后将<code>main.cpp</code>改为：</p>
+<div class="highlight"><pre><span class="cp">#include &lt;QtGui/QApplication&gt;</span>
+<span class="cp">#include &lt;QTextCodec&gt;</span>
+<span class="cp">#include &lt;QDebug&gt;</span>
+<span class="cp">#include &lt;QSqlDriver&gt;</span>
+<span class="cp">#include &lt;QSqlDatabase&gt;</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span>
+<span class="p">{</span>
+    <span class="n">QCoreApplication</span> <span class="n">a</span><span class="p">(</span><span class="n">argc</span><span class="p">,</span> <span class="n">argv</span><span class="p">);</span>
+    <span class="n">qDebug</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Available drivers:&quot;</span><span class="p">;</span>
+    <span class="n">QStringList</span> <span class="n">drivers</span> <span class="o">=</span> <span class="n">QSqlDatabase</span><span class="o">::</span><span class="n">drivers</span><span class="p">();</span>
+    <span class="n">foreach</span><span class="p">(</span><span class="n">QString</span> <span class="n">driver</span><span class="p">,</span> <span class="n">drivers</span><span class="p">)</span>
+    <span class="n">qDebug</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;</span><span class="se">\t</span><span class="s">&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">driver</span><span class="p">;</span>
+    <span class="k">return</span> <span class="n">a</span><span class="p">.</span><span class="n">exec</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+
+
+</li>
+</ul>
+<p>运行结果中出现mysql即可。</p>
+<p><img alt="" src="http://altynai-blog-images.qiniudn.com/2012/04/qtsdk4-8-mysql-3.jpg" /></p>
+  </div>
+  <div id="article_meta">
+  	<p>Author: <a href="http://localhost:8000/author/altynai.html">Altynai</a></p>
+    <p>Category: <a href="http://localhost:8000/category/code.html">Code</a></p>
+    <p>Tags:
+      <a href="http://localhost:8000/tag/cc.html">C/C++</a>    </p>
+  </div>
+    <div class="comments">
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_identifier = "2012/04/qtsdk4-8-mysql/";
+        var disqus_url = "http://localhost:8000/2012/04/qtsdk4-8-mysql/";
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://Sideways.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+    </div>
+</article>
+
+    <footer>
+	
+<p><a href="http://localhost:8000/" class="button_accent">&larr; Back to Index</a></p>
+    </footer>
+
+    <div id="ending_message">
+      <p>&copy Geoffrey Gimse. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme adapted from pelican-svbhack available on <a href="https://github.com/giulivo/pelican-svbhack" target="_blank">github</a>. Many of the images used on this site are in the Public Domain and available from <a href="http://openclipart.org" target="_blank">Openclipart</a>.</p>
+    </div>
+  </main>
+</body>
+</html>

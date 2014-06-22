@@ -17,7 +17,7 @@
 
 
   <title>
-Tags  </title>
+Tag: Django  </title>
 
 </head>
 
@@ -46,29 +46,37 @@ Tags  </title>
 
   <main>
      <header>
-		<p><a href="http://localhost:8000">Sideways</a>
-          </p>
+<p>Tag: Django
+</p>
     </header>
 <article>
+  <div id="article_title">
+    <h1><a href="http://localhost:8000/2013/10/atom-summary/">项目感受</a></h1>
+  </div>
   <div id="article_text">
-    <ul>
-      <li><a href="http://localhost:8000/tag/DP.html">DP</a></li>
-      <li><a href="http://localhost:8000/tag/Redis.html">Redis</a></li>
-      <li><a href="http://localhost:8000/tag/ZOJ.html">ZOJ</a></li>
-      <li><a href="http://localhost:8000/tag/C/C++.html">C/C++</a></li>
-      <li><a href="http://localhost:8000/tag/Java.html">Java</a></li>
-      <li><a href="http://localhost:8000/tag/Nginx.html">Nginx</a></li>
-      <li><a href="http://localhost:8000/tag/HDU.html">HDU</a></li>
-      <li><a href="http://localhost:8000/tag/Django.html">Django</a></li>
-      <li><a href="http://localhost:8000/tag/Python.html">Python</a></li>
-      <li><a href="http://localhost:8000/tag/Life.html">Life</a></li>
-      <li><a href="http://localhost:8000/tag/ACM.html">ACM</a></li>
-    </ul>
+    <p>忙了一个多月，第一个能说是正式的项目算差不多忙完了（后续优化不算的话），感受颇深，做个小总(tu)结(cao)。</p>
+<h3>学到的东西</h3>
+<p><strong>Nginx</strong>  </p>
+<p>之前在学校里的时候，知道并稍微了解过一部分相关的资料，但并没有实际上手搭建或者配置过Nginx。由于不是很熟悉相关配置，需要经常一边查文档、资料，一边修改Nginx的配置，然后再测试。在经历了反反复复的几次“配置测试”后，对基本的location匹配，rewrite等有了进一步的认识，同时也养成了经常查官方文档的好习惯: )。其中，最容易搞错的问题在于location的优先级上，下面是一个比较简单的总结：</p>
+<div class="highlight"><pre><span class="o">~</span>     <span class="c"># 执行一个正则匹配，区分大小写</span>
+<span class="o">~*</span>    <span class="c"># 执行一个正则匹配，不区分大小写</span>
+<span class="o">^~</span>    <span class="c"># 进行普通字符匹配，如果匹配，之后不匹配别的选项</span>
+<span class="o">=</span>     <span class="c"># 进行普通字符精确匹配（优先级最高）</span>
+<span class="err">@</span>     <span class="c"># 定义一个命名的location，使用在内部定向时，例如error_page, try_files</span>
+<span class="mf">1.</span> <span class="err">如果满足某个字符精确匹配，停止搜索。</span>
+<span class="mf">2.</span> <span class="err">对于剩余的匹配字符串，进行最长匹配。如果这个匹配使用</span><span class="o">^~</span><span class="err">前缀，停止搜索。</span>
+<span class="mf">3 ...</span></pre></div>
+  </div>
+  <div id="article_more">
+  	<a class="button_more" href="http://localhost:8000/2013/10/atom-summary/">More <i class=" icon-arrow-right"></i></a>
   </div>
 </article>
 
     <footer>
 	
+<div id="paginator">
+
+</div>
     </footer>
 
     <div id="ending_message">

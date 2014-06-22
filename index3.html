@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- <link rel="stylesheet/less" type="text/css" href="http://localhost:8000/theme/css/style.less">
+  <script src="http://localhost:8000/theme/js/less-1.3.3.min.js" type="text/javascript"></script> test -->
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/theme/css/style.css"> 
+
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/theme/css/pygments.css">
+  <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=PT+Sans|PT+Serif|PT+Mono">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width; initial-scale=1.0">
+  <meta name="author" content="Altynai">
+  <meta name="description" content="Posts and writings by Altynai">
+  <link rel="shortcut icon" href="http://localhost:8000/theme/images/favicon.ico" type="image/x-icon" />
+
+
+  <title>
+Sideways  </title>
+
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+        <a href="http://localhost:8000">
+        <img src="http://localhost:8000/theme/images/logo.jpg" alt="logo">
+      </a>
+      <h2><a href="http://localhost:8000">Sideways</a></h2>
+      <p class="tagline">Reflections on life, code, movie, and the craft of writing..</p>
+      <div id="social_links">
+	<ul id="social_list">
+        <li><a href="https://github.com/Altynai" rel='me' target="_blank"><i class="icon-github icon-2x"></i></a></li>
+        <li><a href="http://weibo.com/u/2164187874" rel='me' target="_blank"><i class="icon-weibo icon-2x"></i></a></li>
+	</ul>
+      </div>
+      <ul>
+        <li><a  href="http://localhost:8000/pages/about-me.html">关于我</a></li>
+        <li><a  href="http://localhost:8000/archives.html">Archives</a></li>
+       </ul>
+    </div>
+    <div class="overlay">
+    </div>
+  </aside>
+
+  <main>
+     <header>
+		<p><a href="http://localhost:8000">Sideways</a>
+          </p>
+    </header>
+<article>
+  <div id="article_title">
+    <h1><a href="http://localhost:8000/2011/11/hdu-4121-4123/">2011 Asia Fuzhou Regional A题 & B题 & C题</a></h1>
+  </div>
+  <div id="article_text">
+    <p>【Hdu 4121 XiangQi】<a href="http://acm.hdu.edu.cn/showproblem.php?pid=4121">http://acm.hdu.edu.cn/showproblem.php?pid=4121</a></p>
+<p>题意：给你一个象棋局，这个局已经“将”了，红方有帅，车，炮，马这四种棋子，黑方只有一个将，现在轮到黑方走，问：将无论怎么走，新局面还是“将”。</p>
+<p>分析：模拟。要注意的地方：将走一步可能走出范围或者吃掉红方的一个棋子；将帅直线且中间无子的时候，帅可以直接冲将；卡马脚的时候，马不能往跳那个方向跳。</p>
+<div class="highlight"><pre><span class="cp">#include&lt;iostream&gt;</span>
+<span class="cp">#include&lt;algorithm&gt;</span>
+<span class="cp">#include&lt;cmath&gt;</span>
+<span class="cp">#include&lt;string&gt;</span>
+<span class="cp">#include&lt;cstdio&gt;</span>
+<span class="cp">#include&lt;queue&gt;</span>
+<span class="cp">#include&lt;cstring&gt;</span>
+<span class="k">using ...</span></pre></div>
+  </div>
+  <div id="article_more">
+  	<a class="button_more" href="http://localhost:8000/2011/11/hdu-4121-4123/">More <i class=" icon-arrow-right"></i></a>
+  </div>
+</article>
+<hr />
+<article>
+  <div id="article_title">
+    <h1><a href="http://localhost:8000/2011/11/regional-summary/">ShangHai & FuZhou Regional's summary</a></h1>
+  </div>
+  <div id="article_text">
+    <p>10月中旬去上海之前，我们队大部分的时间还是3个人分开在进行练习，形式就是简单的做题并分析，我也在Hdu开过一场DIY，题目主要是一些前几年各个赛区的签名题和难度中等偏下的题，那段时间，只要一有空，我就在做那个。毕竟我们队的每个人都没有打过Regional的经验，所以，准备的这段时间里，心情很是紧张和不安，紧张是因为怕在比赛的时候出现我们难以控制的局面，不安是因为在出发之前的训练中，队伍的情况不是很稳定，偶尔对局面的把握很不明智，没有明显的大局观。举个简单的例子，当出现一道题提交了很多次还没过的时候，我对于每一次的修改，都抱着可能AC的心态去尝试，而不彻底的分析和想清楚这后果，这是一个可怕的恶循环。</p>
+<p>上海热身赛的时候，过了两题之后，感觉队伍状态还是很一般般，也暴露了一个大问题：前期卡题，中后期几次之后才过题，理由也就是刚刚提到的，没有彻底想清楚。现场比赛的时候和平常时间做题是完全不一样的，对于后者，有足够的时间，因此我不小心有了一个很不好的习惯：当想法不是很成熟的时候就开始敲题目了，当然，大多数的结果必然是中途而废，所以，热身赛那天晚上队伍也进行了讨论和调整。第二天现场赛的时候，我们担心的情况还是发生了，简单的说就是当时几乎全场都过了A题，而我们久久不过，整个队伍被牵制于此，我看得出来，当时整个队伍都很着急，都太想把A过掉了，更直白的说法：只想把A题过掉 ...</p>
+  </div>
+  <div id="article_more">
+  	<a class="button_more" href="http://localhost:8000/2011/11/regional-summary/">More <i class=" icon-arrow-right"></i></a>
+  </div>
+</article>
+<hr />
+<article>
+  <div id="article_title">
+    <h1><a href="http://localhost:8000/2011/11/15/">while(fighting,!dead);</a></h1>
+  </div>
+  <div id="article_text">
+    <p>自从好好整理了桌子之后，心情一直不错。之前的桌子真是乱啊，草稿纸，书，电脑都是乱放的。</p>
+<p>我感觉最近自己有那么一点的强迫症，比如：时不时要去整理些东西；敲代码的时候，代码不对齐就很不爽；换下来的衣服隔天必须要洗掉（以前都要放2.3天再洗
+= =），不过也是个好现象吧，不懒了，哈。</p>
+<p>现在2餐不在校门口解决了，重新去家和2楼吃了，原来那里的水波蛋已经是一小碗一小碗分开做了，
+而且好吃的很，所以现在早早的跑去食堂，每顿必点水波蛋，上面还有点小肉末，味道好极了。</p>
+<p>其实从初中开始就很喜欢吃了，感觉像是吃果冻一样；高中的时候，食堂如果有水波蛋的话，再长的队伍我也会去排的。</p>
+<p>上周末，寝室入手电磁炉一只，以后大家决定周末去买菜，然后晚上在寝室里好好的吃一顿，这感觉不错，像家里一样。</p>
+<p>冬天一回家，家里总会特意用火锅迎接我，惭愧的是，家离学校很近，不过我一般都是隔那么一个月才回去。</p>
+<p>在学校想家，在家又想学校，这是一个令人纠结的循环。</p>
+<p>这周五出发去福州了，打今年最后一场Regional，上海的表现实在是太差了，回来后很是失望，也好好反省了一下，希望这周末能有个很好的状态 ...</p>
+  </div>
+  <div id="article_more">
+  	<a class="button_more" href="http://localhost:8000/2011/11/15/">More <i class=" icon-arrow-right"></i></a>
+  </div>
+</article>
+<hr />
+<article>
+  <div id="article_title">
+    <h1><a href="http://localhost:8000/2011/11/zoj-2706-thermal-death-of-the-universe/">ZOJ 2706 Thermal Death of the Universe</a></h1>
+  </div>
+  <div id="article_text">
+    <p><span style="color: #ff00ff;"><strong>【ZOJ
+2706】</strong></span><a href="http://acm.zju.edu.cn/onlinejudge/showProblem.do?problemCode=2706">http://acm.zju.edu.cn/onlinejudge/showProblem.do?problemCode=2706</a></p>
+<p>题意：给你一个30,000的序列，然后有30,000个操作，每个操作把某个区间的所有值变成这个区间的平均数，小数四舍五入的原则给定，求最后的序列。</p>
+<p>这题很显然是线段树，而且需要lazy操作（lazy为true表示当前整段是否相同），lazy操作需要的地方：<span
+style="color: #ff00ff;">update（区间更新）、Search（得到区间sum）和query（去除所有的lazy标记，得到最后的序列）</span>，一开始死活都没有发现WA在哪里，后来才发现Search（得到区间sum）操作的时候忘记lazy的pushdown操作了，这个下次要注意。</p>
+<p>还有一点要注意的就是区间的和为负数的情况，这样ceil和floor和整数是不一样的。</p>
+<div class="highlight"><pre><span class="cp">#include &lt;iostream&gt;</span>
+<span class="cp">#include &lt;cstdio&gt;</span>
+<span class="cp">#include &lt;cstring&gt;</span>
+<span class="cp">#include &lt;string ...</span></pre></div>
+  </div>
+  <div id="article_more">
+  	<a class="button_more" href="http://localhost:8000/2011/11/zoj-2706-thermal-death-of-the-universe/">More <i class=" icon-arrow-right"></i></a>
+  </div>
+</article>
+<hr />
+<article>
+  <div id="article_title">
+    <h1><a href="http://localhost:8000/2011/10/hdu-4096/">Hdu 4096 Universal Question Answering System</a></h1>
+  </div>
+  <div id="article_text">
+    <p><span style="color: #ff00ff;"><strong>[HDU
+4096] </strong></span><a href="http://acm.hdu.edu.cn/showproblem.php?pid=4096">http://acm.hdu.edu.cn/showproblem.php?pid=4096</a></p>
+<p>from 2011 Asia Shanghai Regional Contest</p>
+<p>题意：给你两种陈述句的格式，通过其给定的关系建立一张关系网，然后在给定的疑问句中确认两个东西在关系网中是否存在关系。</p>
+<p>当时是在现场赛的最后时刻慌忙敲的，结果返回各种WA。今天题目在HDU挂出来之后又按照现场赛的思路重新敲了遍，居然1Y了，蛋碎了。</p>
+<p>我的做法：</p>
+<p>可以观察到，关系网内最多有2000个结点，由于noun和verb中可能含有相同的词语，所以我用两个<code>map&lt;string,int&gt;</code>来分别记录。</p>
+<p>对于陈述句，得到两个关键字，u和v，在关系网中添加<code>u-&gt;v</code>的边即可。</p>
+<p>对于疑问句，得到两个关键字，u和v，如果在关系网中满足<code>u-&gt;v</code><strong>可达</strong>，则为 ...</p>
+  </div>
+  <div id="article_more">
+  	<a class="button_more" href="http://localhost:8000/2011/10/hdu-4096/">More <i class=" icon-arrow-right"></i></a>
+  </div>
+</article>
+<hr />
+<article>
+  <div id="article_title">
+    <h1><a href="http://localhost:8000/2011/10/short-holiday/">短暂的假期</a></h1>
+  </div>
+  <div id="article_text">
+    <p>昨天晚上回的校，算下来，差不多在家里宅了5天。</p>
+<p>第一次放假回家没有上网，现在已经无力吐槽家里的网速了：很慢，而且还是无线，不稳定，老是要掉。</p>
+<p>放假前下好了TBBT的前四季，准备回家这几天好好看个够的，事实就是一天一季。</p>
+<p>现在看到第四季的一半不到点，争取早日赶上大部队。</p>
+<p>今天早上完全是被吓醒的，人人看到一行状态"Steve Jobs 1955-2011"，立马被吓到了，赶紧起身去开机看新闻。</p>
+<p>结果是真的，差不多在2个小时前走的。虽然我们都知道这一天终究会来临，但这一天来的这么突然，真的没有想到。</p>
+<p>然后又看了一遍在stanford的那次演讲，以及07年发布iPhone等视频，</p>
+<p>视频里也稍微看的出来，时间越往后，显得更加消瘦。</p>
+<p>一路走好，天堂也会有iPhone了。</p>
+<p>well，well，well，假期结束了，该开始干活了，明天的网络赛加油！</p>
+  </div>
+  <div id="article_more">
+  	<a class="button_more" href="http://localhost:8000/2011/10/short-holiday/">More <i class=" icon-arrow-right"></i></a>
+  </div>
+</article>
+<hr />
+<article>
+  <div id="article_title">
+    <h1><a href="http://localhost:8000/2011/09/auto-ac-matrix-dp/">hdu 3962 & hdu 2243 & zjut 1734 AC自动机,矩阵,DP</a></h1>
+  </div>
+  <div id="article_text">
+    <p><span style="color: #ff00ff;">[hdu
+3962]</span> <a href="http://acm.hdu.edu.cn/showproblem.php?pid=3962">http://acm.hdu.edu.cn/showproblem.php?pid=3962</a></p>
+<p>题目大意：给你N个DNA片段，问你长度为L的DNA中至少包含2个给定片段的种数。</p>
+<p>思路：想到一共的种数为<code>4^L</code>，我们只要减去不包含和只包含1个给点片段的种数。</p>
+<p>首先，构造好自动机，然后就是构造矩阵。假设自动机一共有n个结点（包括）root，编号0,1....n-1，矩阵的规模为（2n
+X 2n）</p>
+<ul>
+<li>
+<p>i点（0≤i＜n）表示到trie图中i点不经过危险结点的路径数</p>
+</li>
+<li>
+<p>i点（n≤i＜2*n）表示到trie图中i-n点经过一次危险结点的路径数</p>
+</li>
+</ul>
+<p>所以，对于i点（0≤i＜n）的每一个儿子结点j：</p>
+<p>如果j是安全结点 ...</p>
+  </div>
+  <div id="article_more">
+  	<a class="button_more" href="http://localhost:8000/2011/09/auto-ac-matrix-dp/">More <i class=" icon-arrow-right"></i></a>
+  </div>
+</article>
+<hr />
+<article>
+  <div id="article_title">
+    <h1><a href="http://localhost:8000/2011/09/hard-won-dinner/">难得的聚餐</a></h1>
+  </div>
+  <div id="article_text">
+    <p>首先，不得不说，我们班的凝聚力还是不错的，虽然平常大家都往返于寝室和教室这两点之间，见面的机会也不算很多，顶多的就是楼道里碰到或者楼下车棚里碰到时候，打个招呼什么的，但今天晚上班级难得的聚餐，貌似大家都挺开心的，这点很好。</p>
+<p>由于各种原因，有一部分同学还是没来，我不知道游戏或者什么对于你们有多么的重要，不管怎么样，像今天晚上这样难得聚聚的机会，真的是没多少了。</p>
+<p>若干年以后，希望我们的聚会还是能够像这样开开心心的，毕竟大学的同学，肯定是一辈子都难以忘记的，因为他们陪你走过了这灿烂而又独一无二的四年。</p>
+<p>晚饭的时候喝了不少酒，也去给旁边一桌的每个人敬了一杯，临走的时候肚子还有点小撑，酒一喝了，饭什么的也就不必吃了，吃点小菜稍微添添肚子就好了。</p>
+<p>回来的时候泡了杯茶喝，当缓缓一下酒气，说实话，这几个月来，几乎没喝过饮料，上个月从家里带了一包茶叶之后，在寝室里几乎都是喝的茶，上课的话就带杯水，说白了，饮料其实也没什么好喝的，长时间喝下来，茶才是最好喝的，特别是杭州这种炎热的天气。</p>
+<p>后来回寝室之后，小奇来我们寝室拉我们去KTV通宵，我还是尽力谢绝了，毕竟明天还有bupt的网络赛，精神头还是要保持好的。</p>
+<p>如果是平常的话，那我肯定还是会去的，但今天情况比较特殊，所以在这里向小奇说声抱歉，下次我肯定去 ...</p>
+  </div>
+  <div id="article_more">
+  	<a class="button_more" href="http://localhost:8000/2011/09/hard-won-dinner/">More <i class=" icon-arrow-right"></i></a>
+  </div>
+</article>
+<hr />
+<article>
+  <div id="article_title">
+    <h1><a href="http://localhost:8000/2011/09/zjut-naonayang/">NaoNaYang</a></h1>
+  </div>
+  <div id="article_text">
+    <p>最后大家讨论了一下，我们队是去福州赛区(11月19-20号)和上海赛区(去打酱油..)</p>
+<p>今天把队名弄了一下<code>NaoNaYang</code>其实我更喜欢<code>NiMengDaoDiXiangNaoNaYang</code>哈哈</p>
+<p>差不多还有将近2个月的时间，所以这2个月的时间里，大家决定有时间就在一起开场比赛，这样算是保持一种状态的方法吧。</p>
+<p>昨天第一场状态不佳啊...水题都要很久才过..坑爹了</p>
+<p>题目来自<a href="http://acm.hdu.edu.cn/search.php?field=problem&amp;key=2008%20Asia%20Regional%20Beijing&amp;source=1&amp;searchmode=source">2008 Asia Regional Beijing</a></p>
+<p>自己做过的几题就在这里稍微提及一下：</p>
+<p><span style="color: #ff00ff;">[hdu
+2485]</span> <a href="http://acm.hdu.edu.cn/showproblem.php?pid=2485">http://acm.hdu.edu.cn/showproblem.php?pid=2485</a></p>
+<p>由于只有50个点，先floyd一下，然后找割点，很显然，找割点的时候就是拆点网络流的模型。</p>
+<p>关键是K，只有满足<code>dis[1][i]+dis[i][n]&lt;=K</code>的点才拆点，以为这些点才是关键点 ...</p>
+  </div>
+  <div id="article_more">
+  	<a class="button_more" href="http://localhost:8000/2011/09/zjut-naonayang/">More <i class=" icon-arrow-right"></i></a>
+  </div>
+</article>
+<hr />
+<article>
+  <div id="article_title">
+    <h1><a href="http://localhost:8000/2011/09/hdu-4016/">Hdu 4016</a></h1>
+  </div>
+  <div id="article_text">
+    <p>Asia Regional Shanghai Site —— Warmup的第6题，在比赛的时候，一直想不出什么好的方法，但知道搜索应该可以过的，学校的一队拿了这题的一血，后来也没几个队过这题。</p>
+<blockquote>
+<p>其实&amp;有一个特点，那就是A&amp;B=C，其中C≤min(A,B)。</p>
+</blockquote>
+<p>那么，我们可以贪心的想，取小的数(高位都为0了)得到的结果肯定更加接近最优解，但不并一定就是取最小的k个数。</p>
+<p>如果暴力的去dfs，复杂度就是<code>2^40</code>，这明显是too simple了。</p>
+<p>所以要剪枝，再想一下&amp;的那个性质，假如你递归下去，得到的值肯定是要比当前递归到的层的值还要小的，也就是说，我们不必一定要等到递归到选完k个数了的时候再更新answer，直接在当前递归层更新就可以了。</p>
+<p>光光有这么一个剪枝还是不够的，还是利用这个性质，假设我们现在递归到第id个数，如果我把id\~n这些数全&amp;进来，如果此时的结果还是≥answer，那么就可以剪枝了。</p>
+<blockquote>
+<p>证明也很简单：如果id ...</p></blockquote>
+  </div>
+  <div id="article_more">
+  	<a class="button_more" href="http://localhost:8000/2011/09/hdu-4016/">More <i class=" icon-arrow-right"></i></a>
+  </div>
+</article>
+
+    <footer>
+	
+<div id="paginator">
+	<div id="next_page_left">
+		<a href="http://localhost:8000/index4.html" class="button_accent"><i class="icon-arrow-left"></i> Older Posts</a>
+	</div>
+
+	<div id="next_page_right">
+		<a href="http://localhost:8000/index2.html" class="button_accent">Newer Posts <i class="icon-arrow-right"></i></a>
+	</div>
+</div>
+    </footer>
+
+    <div id="ending_message">
+      <p>&copy Geoffrey Gimse. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme adapted from pelican-svbhack available on <a href="https://github.com/giulivo/pelican-svbhack" target="_blank">github</a>. Many of the images used on this site are in the Public Domain and available from <a href="http://openclipart.org" target="_blank">Openclipart</a>.</p>
+    </div>
+  </main>
+</body>
+</html>

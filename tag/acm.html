@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- <link rel="stylesheet/less" type="text/css" href="http://localhost:8000/theme/css/style.less">
+  <script src="http://localhost:8000/theme/js/less-1.3.3.min.js" type="text/javascript"></script> test -->
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/theme/css/style.css"> 
+
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/theme/css/pygments.css">
+  <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=PT+Sans|PT+Serif|PT+Mono">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width; initial-scale=1.0">
+  <meta name="author" content="Altynai">
+  <meta name="description" content="Posts and writings by Altynai">
+  <link rel="shortcut icon" href="http://localhost:8000/theme/images/favicon.ico" type="image/x-icon" />
+
+
+  <title>
+Tag: ACM  </title>
+
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+        <a href="http://localhost:8000">
+        <img src="http://localhost:8000/theme/images/logo.jpg" alt="logo">
+      </a>
+      <h2><a href="http://localhost:8000">Sideways</a></h2>
+      <p class="tagline">Reflections on life, code, movie, and the craft of writing..</p>
+      <div id="social_links">
+	<ul id="social_list">
+        <li><a href="https://github.com/Altynai" rel='me' target="_blank"><i class="icon-github icon-2x"></i></a></li>
+        <li><a href="http://weibo.com/u/2164187874" rel='me' target="_blank"><i class="icon-weibo icon-2x"></i></a></li>
+	</ul>
+      </div>
+      <ul>
+        <li><a  href="http://localhost:8000/pages/about-me.html">关于我</a></li>
+        <li><a  href="http://localhost:8000/archives.html">Archives</a></li>
+       </ul>
+    </div>
+    <div class="overlay">
+    </div>
+  </aside>
+
+  <main>
+     <header>
+<p>Tag: ACM
+</p>
+    </header>
+<article>
+  <div id="article_title">
+    <h1><a href="http://localhost:8000/2012/08/hdu-4391-paint-the-wall/">Hdu 4391 Paint The Wall 线段树(优化)</a></h1>
+  </div>
+  <div id="article_text">
+    <p><span style="color: #ff00ff;">【hdu
+4391】</span><a href="http://acm.hdu.edu.cn/showproblem.php?pid=4391">http://acm.hdu.edu.cn/showproblem.php?pid=4391</a></p>
+<p>【题意】100000个点，100000个操作，操作1把[l,r]的点涂成颜色z，操作2查询[l,r]内颜色为z的点个数，<code>0&lt;=z&lt;=2^31</code></p>
+<p>【思路】2012多校最后一场，当时是我上去敲的，我一开始的思路：线段树记录两个附加域
+ncolor表示这段的颜色（-1表示这段为多种颜色）nor表示整段所有颜色的或值。更新就不多说了，<code>push_up</code>和<code>push_down</code>函数不要写错就好。然后查询的时候，假设查询到一个线段，如果这个线段内部包含z这个颜色，那么一定满足<code>nor&amp;z&gt;=z</code>（都看成二进制就好理解了），交了之后T了。。。后来想了一下这个剪枝太他妈的不够了。。因为 ...</p>
+  </div>
+  <div id="article_more">
+  	<a class="button_more" href="http://localhost:8000/2012/08/hdu-4391-paint-the-wall/">More <i class=" icon-arrow-right"></i></a>
+  </div>
+</article>
+<hr />
+<article>
+  <div id="article_title">
+    <h1><a href="http://localhost:8000/2012/08/hdu-4389/">Hdu 4389 X mod f(x) 数位DP</a></h1>
+  </div>
+  <div id="article_text">
+    <p><span style="color: #ff00ff;">【hdu
+4389】</span><a href="http://acm.hdu.edu.cn/showproblem.php?pid=4389">http://acm.hdu.edu.cn/showproblem.php?pid=4389</a></p>
+<p>【题意】f(x)表示x各位的数字和. 给定<code>1&lt;=L&lt;=R&lt;=10^9</code>, 求[L,R]范围内满足<code>x%f(x)=0</code>的个数. </p>
+<p>【想法】由于L,R的范围很大, 所以很能想到答案是<code>funcation(R)-funcation(L-1)</code>, 然后就是想办法求funcation. 可以观察到<code>1&lt;=f(x)&lt;=81</code>, 所以一开始想的是枚举每个<code>y=f(x)</code>,每次预处理<code>dp ...</code></p>
+  </div>
+  <div id="article_more">
+  	<a class="button_more" href="http://localhost:8000/2012/08/hdu-4389/">More <i class=" icon-arrow-right"></i></a>
+  </div>
+</article>
+<hr />
+<article>
+  <div id="article_title">
+    <h1><a href="http://localhost:8000/2012/04/zoj-3606-lazy-salesgirl/">ZOJ 3606 Lazy Salesgirl</a></h1>
+  </div>
+  <div id="article_text">
+    <p><span style="color: #ff00ff;">【ZOJ
+3606】</span><a href="http://acm.zju.edu.cn/onlinejudge/showProblem.do?problemId=4709">http://acm.zju.edu.cn/onlinejudge/showProblem.do?problemId=4709</a></p>
+<p>今年浙江省省赛的G题，比赛的最后时刻是我去上去敲的，赛后才明白有个地方写挫了，以至于到比赛结束还没调好=
+=真见鬼。</p>
+<p>【题意】小女孩卖面包,有100000个顾客要来买(不会同一个时刻来两个顾客),现在有一个时间w,表示如果相邻两个顾客来的时间差严格大于w的话,小女孩在这个时间内会睡着,而新来的那个顾客不会买,只会把小女孩叫醒(既重新开始计算w),还有一点就是,第k个顾客买的面包数量为<code>(k-1)%3+1</code>,也就是<code>1,2,3,1,2,3....</code>这样的循环,现在让你求平均卖出价(卖得面包的总价/卖给的顾客数)最大的情况下的w最小
+= = 描述有点绕,还是不太明白的建议看下原题目的描述..</p>
+<p>【解法】</p>
+<p>线段树的每个节点维护以下值：</p>
+<ul>
+<li>cnt:线段内已经插入点的个数 ...</li></ul>
+  </div>
+  <div id="article_more">
+  	<a class="button_more" href="http://localhost:8000/2012/04/zoj-3606-lazy-salesgirl/">More <i class=" icon-arrow-right"></i></a>
+  </div>
+</article>
+<hr />
+<article>
+  <div id="article_title">
+    <h1><a href="http://localhost:8000/2012/03/zoj-3582/">ZOJ 3582 Back to the Past</a></h1>
+  </div>
+  <div id="article_text">
+    <p><span style="color: #ff00ff;">【ZOJ
+3582】</span><a href="http://acm.zju.edu.cn/onlinejudge/showProblem.do?problemCode=3582">http://acm.zju.edu.cn/onlinejudge/showProblem.do?problemCode=3582</a></p>
+<p>【题意】有两排灯,每排50个,每天每个灯都有p的概率变亮,变亮之后就不考虑此灯,当每排都有&gt;=m个灯亮时问题结束,求达到这个条件的天数的期望.</p>
+<p>【想法】</p>
+<p><code>dp[i][j]</code>表示两排分别亮了i盏和j盏灯的情况下,到问题结束的期望天数.</p>
+<p>假设现在这天第一排亮了a盏，第二排亮了b盏，$0\leqslant b \leqslant n - j$</p>
+<p>那么这个概率为$P(a,b) = \binom{n-i}{a} * p^{a} * (1-p)^{n-i-a} * \binom{n-j}{b} * p^{b} * (1-p)^{n-j-b}$ ...</p><script type= "text/javascript">
+    if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+        var mathjaxscript = document.createElement('script');
+        mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+        mathjaxscript.type = 'text/javascript';
+        mathjaxscript.src = 'https:' == document.location.protocol
+                ? 'https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'
+                : 'http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+        mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+            "MathJax.Hub.Config({" +
+            "    config: ['MMLorHTML.js']," +
+            "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+            "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+            "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+            "    displayAlign: 'center'," +
+            "    displayIndent: '0em'," +
+            "    showMathMenu: true," +
+            "    tex2jax: { " +
+            "        inlineMath: [ ['$','$'] ], " +
+            "        displayMath: [ ['$$','$$'] ]," +
+            "        processEscapes: true," +
+            "        preview: 'TeX'," +
+            "    }, " +
+            "    'HTML-CSS': { " +
+            "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'black ! important'} }" +
+            "    } " +
+            "}); ";
+        (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+    }
+</script>
+
+  </div>
+  <div id="article_more">
+  	<a class="button_more" href="http://localhost:8000/2012/03/zoj-3582/">More <i class=" icon-arrow-right"></i></a>
+  </div>
+</article>
+<hr />
+<article>
+  <div id="article_title">
+    <h1><a href="http://localhost:8000/2011/12/zjut-1783/">ZJUT 1783 线段树 lazy标记</a></h1>
+  </div>
+  <div id="article_text">
+    <p><span style="color: #ff00ff;">【ZJUT
+1783】</span><a href="http://acm.zjut.edu.cn/ShowProblem.aspx?ShowID=1783">http://acm.zjut.edu.cn/ShowProblem.aspx?ShowID=1783</a></p>
+<p>今天圣诞赛现场赛的B题。坑爹的<code>push_down</code>函数写错了，卡了一个小时。</p>
+<p>题目的意思很简单，就是在某个区间插入一个等差数列，然后查询某区间的和，所以我想到的是用low和up来维护等差数列的首项和末项，因为对于一个固定的区间，这个等差数列是唯一的。然后就是要lazy标记，方法和经典的"成段更新求和"类似，关键还是<code>push_down</code>函数千万不能写错！</p>
+<div class="highlight"><pre><span class="cp">#define N 100005</span>
+<span class="cp">#define ll long long</span>
+<span class="cp">#define eps 1e-7</span>
+
+<span class="cp">#define lchild(id) (id&lt;&lt;1)</span>
+<span class="cp">#define rchild(id) ((id&lt;&lt;1)|1 ...</span></pre></div>
+  </div>
+  <div id="article_more">
+  	<a class="button_more" href="http://localhost:8000/2011/12/zjut-1783/">More <i class=" icon-arrow-right"></i></a>
+  </div>
+</article>
+<hr />
+<article>
+  <div id="article_title">
+    <h1><a href="http://localhost:8000/2011/11/hdu-4121-4123/">2011 Asia Fuzhou Regional A题 & B题 & C题</a></h1>
+  </div>
+  <div id="article_text">
+    <p>【Hdu 4121 XiangQi】<a href="http://acm.hdu.edu.cn/showproblem.php?pid=4121">http://acm.hdu.edu.cn/showproblem.php?pid=4121</a></p>
+<p>题意：给你一个象棋局，这个局已经“将”了，红方有帅，车，炮，马这四种棋子，黑方只有一个将，现在轮到黑方走，问：将无论怎么走，新局面还是“将”。</p>
+<p>分析：模拟。要注意的地方：将走一步可能走出范围或者吃掉红方的一个棋子；将帅直线且中间无子的时候，帅可以直接冲将；卡马脚的时候，马不能往跳那个方向跳。</p>
+<div class="highlight"><pre><span class="cp">#include&lt;iostream&gt;</span>
+<span class="cp">#include&lt;algorithm&gt;</span>
+<span class="cp">#include&lt;cmath&gt;</span>
+<span class="cp">#include&lt;string&gt;</span>
+<span class="cp">#include&lt;cstdio&gt;</span>
+<span class="cp">#include&lt;queue&gt;</span>
+<span class="cp">#include&lt;cstring&gt;</span>
+<span class="k">using ...</span></pre></div>
+  </div>
+  <div id="article_more">
+  	<a class="button_more" href="http://localhost:8000/2011/11/hdu-4121-4123/">More <i class=" icon-arrow-right"></i></a>
+  </div>
+</article>
+<hr />
+<article>
+  <div id="article_title">
+    <h1><a href="http://localhost:8000/2011/11/regional-summary/">ShangHai & FuZhou Regional's summary</a></h1>
+  </div>
+  <div id="article_text">
+    <p>10月中旬去上海之前，我们队大部分的时间还是3个人分开在进行练习，形式就是简单的做题并分析，我也在Hdu开过一场DIY，题目主要是一些前几年各个赛区的签名题和难度中等偏下的题，那段时间，只要一有空，我就在做那个。毕竟我们队的每个人都没有打过Regional的经验，所以，准备的这段时间里，心情很是紧张和不安，紧张是因为怕在比赛的时候出现我们难以控制的局面，不安是因为在出发之前的训练中，队伍的情况不是很稳定，偶尔对局面的把握很不明智，没有明显的大局观。举个简单的例子，当出现一道题提交了很多次还没过的时候，我对于每一次的修改，都抱着可能AC的心态去尝试，而不彻底的分析和想清楚这后果，这是一个可怕的恶循环。</p>
+<p>上海热身赛的时候，过了两题之后，感觉队伍状态还是很一般般，也暴露了一个大问题：前期卡题，中后期几次之后才过题，理由也就是刚刚提到的，没有彻底想清楚。现场比赛的时候和平常时间做题是完全不一样的，对于后者，有足够的时间，因此我不小心有了一个很不好的习惯：当想法不是很成熟的时候就开始敲题目了，当然，大多数的结果必然是中途而废，所以，热身赛那天晚上队伍也进行了讨论和调整。第二天现场赛的时候，我们担心的情况还是发生了，简单的说就是当时几乎全场都过了A题，而我们久久不过，整个队伍被牵制于此，我看得出来，当时整个队伍都很着急，都太想把A过掉了，更直白的说法：只想把A题过掉 ...</p>
+  </div>
+  <div id="article_more">
+  	<a class="button_more" href="http://localhost:8000/2011/11/regional-summary/">More <i class=" icon-arrow-right"></i></a>
+  </div>
+</article>
+<hr />
+<article>
+  <div id="article_title">
+    <h1><a href="http://localhost:8000/2011/11/zoj-2706-thermal-death-of-the-universe/">ZOJ 2706 Thermal Death of the Universe</a></h1>
+  </div>
+  <div id="article_text">
+    <p><span style="color: #ff00ff;"><strong>【ZOJ
+2706】</strong></span><a href="http://acm.zju.edu.cn/onlinejudge/showProblem.do?problemCode=2706">http://acm.zju.edu.cn/onlinejudge/showProblem.do?problemCode=2706</a></p>
+<p>题意：给你一个30,000的序列，然后有30,000个操作，每个操作把某个区间的所有值变成这个区间的平均数，小数四舍五入的原则给定，求最后的序列。</p>
+<p>这题很显然是线段树，而且需要lazy操作（lazy为true表示当前整段是否相同），lazy操作需要的地方：<span
+style="color: #ff00ff;">update（区间更新）、Search（得到区间sum）和query（去除所有的lazy标记，得到最后的序列）</span>，一开始死活都没有发现WA在哪里，后来才发现Search（得到区间sum）操作的时候忘记lazy的pushdown操作了，这个下次要注意。</p>
+<p>还有一点要注意的就是区间的和为负数的情况，这样ceil和floor和整数是不一样的。</p>
+<div class="highlight"><pre><span class="cp">#include &lt;iostream&gt;</span>
+<span class="cp">#include &lt;cstdio&gt;</span>
+<span class="cp">#include &lt;cstring&gt;</span>
+<span class="cp">#include &lt;string ...</span></pre></div>
+  </div>
+  <div id="article_more">
+  	<a class="button_more" href="http://localhost:8000/2011/11/zoj-2706-thermal-death-of-the-universe/">More <i class=" icon-arrow-right"></i></a>
+  </div>
+</article>
+<hr />
+<article>
+  <div id="article_title">
+    <h1><a href="http://localhost:8000/2011/10/hdu-4096/">Hdu 4096 Universal Question Answering System</a></h1>
+  </div>
+  <div id="article_text">
+    <p><span style="color: #ff00ff;"><strong>[HDU
+4096] </strong></span><a href="http://acm.hdu.edu.cn/showproblem.php?pid=4096">http://acm.hdu.edu.cn/showproblem.php?pid=4096</a></p>
+<p>from 2011 Asia Shanghai Regional Contest</p>
+<p>题意：给你两种陈述句的格式，通过其给定的关系建立一张关系网，然后在给定的疑问句中确认两个东西在关系网中是否存在关系。</p>
+<p>当时是在现场赛的最后时刻慌忙敲的，结果返回各种WA。今天题目在HDU挂出来之后又按照现场赛的思路重新敲了遍，居然1Y了，蛋碎了。</p>
+<p>我的做法：</p>
+<p>可以观察到，关系网内最多有2000个结点，由于noun和verb中可能含有相同的词语，所以我用两个<code>map&lt;string,int&gt;</code>来分别记录。</p>
+<p>对于陈述句，得到两个关键字，u和v，在关系网中添加<code>u-&gt;v</code>的边即可。</p>
+<p>对于疑问句，得到两个关键字，u和v，如果在关系网中满足<code>u-&gt;v</code><strong>可达</strong>，则为 ...</p>
+  </div>
+  <div id="article_more">
+  	<a class="button_more" href="http://localhost:8000/2011/10/hdu-4096/">More <i class=" icon-arrow-right"></i></a>
+  </div>
+</article>
+<hr />
+<article>
+  <div id="article_title">
+    <h1><a href="http://localhost:8000/2011/09/auto-ac-matrix-dp/">hdu 3962 & hdu 2243 & zjut 1734 AC自动机,矩阵,DP</a></h1>
+  </div>
+  <div id="article_text">
+    <p><span style="color: #ff00ff;">[hdu
+3962]</span> <a href="http://acm.hdu.edu.cn/showproblem.php?pid=3962">http://acm.hdu.edu.cn/showproblem.php?pid=3962</a></p>
+<p>题目大意：给你N个DNA片段，问你长度为L的DNA中至少包含2个给定片段的种数。</p>
+<p>思路：想到一共的种数为<code>4^L</code>，我们只要减去不包含和只包含1个给点片段的种数。</p>
+<p>首先，构造好自动机，然后就是构造矩阵。假设自动机一共有n个结点（包括）root，编号0,1....n-1，矩阵的规模为（2n
+X 2n）</p>
+<ul>
+<li>
+<p>i点（0≤i＜n）表示到trie图中i点不经过危险结点的路径数</p>
+</li>
+<li>
+<p>i点（n≤i＜2*n）表示到trie图中i-n点经过一次危险结点的路径数</p>
+</li>
+</ul>
+<p>所以，对于i点（0≤i＜n）的每一个儿子结点j：</p>
+<p>如果j是安全结点 ...</p>
+  </div>
+  <div id="article_more">
+  	<a class="button_more" href="http://localhost:8000/2011/09/auto-ac-matrix-dp/">More <i class=" icon-arrow-right"></i></a>
+  </div>
+</article>
+
+    <footer>
+	
+<div id="paginator">
+	<div id="next_page_left">
+		<a href="http://localhost:8000/tag/acm2.html" class="button_accent"><i class="icon-arrow-left"></i> Older Posts</a>
+	</div>
+
+</div>
+    </footer>
+
+    <div id="ending_message">
+      <p>&copy Geoffrey Gimse. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme adapted from pelican-svbhack available on <a href="https://github.com/giulivo/pelican-svbhack" target="_blank">github</a>. Many of the images used on this site are in the Public Domain and available from <a href="http://openclipart.org" target="_blank">Openclipart</a>.</p>
+    </div>
+  </main>
+</body>
+</html>

@@ -17,7 +17,7 @@
 
 
   <title>
-Tags  </title>
+Tag: Java  </title>
 
 </head>
 
@@ -46,29 +46,31 @@ Tags  </title>
 
   <main>
      <header>
-		<p><a href="http://localhost:8000">Sideways</a>
-          </p>
+<p>Tag: Java
+</p>
     </header>
 <article>
+  <div id="article_title">
+    <h1><a href="http://localhost:8000/2012/10/linkedin-cleo/">对于Cleo@LinkedIn的一些小分析和体会</a></h1>
+  </div>
   <div id="article_text">
-    <ul>
-      <li><a href="http://localhost:8000/tag/DP.html">DP</a></li>
-      <li><a href="http://localhost:8000/tag/Redis.html">Redis</a></li>
-      <li><a href="http://localhost:8000/tag/ZOJ.html">ZOJ</a></li>
-      <li><a href="http://localhost:8000/tag/C/C++.html">C/C++</a></li>
-      <li><a href="http://localhost:8000/tag/Java.html">Java</a></li>
-      <li><a href="http://localhost:8000/tag/Nginx.html">Nginx</a></li>
-      <li><a href="http://localhost:8000/tag/HDU.html">HDU</a></li>
-      <li><a href="http://localhost:8000/tag/Django.html">Django</a></li>
-      <li><a href="http://localhost:8000/tag/Python.html">Python</a></li>
-      <li><a href="http://localhost:8000/tag/Life.html">Life</a></li>
-      <li><a href="http://localhost:8000/tag/ACM.html">ACM</a></li>
-    </ul>
+    <p>Cleo是LinkedIn的一个开源项目，主要应用还是<a href="http://en.wikipedia.org/wiki/Typeahead">Typeahead</a>这块地方。项目的主页链接：<a href="http://sna-projects.com/cleo/">http://sna-projects.com/cleo/</a></p>
+<p>大致的介绍以及简单的架构可以在那里看到，这里就不再重复。然后，最下面引用了两篇相关的论文。其中，第一篇是Facebook的Typeahead开发团队成员写的一个关于Typeahead的生命周期的文章，第二篇是几个THU大牛写的相关方案。我对这两篇文章做了简单的翻译，英语水平有限，凑合着看吧，传到百度文库了，地址：<a href="http://wenku.baidu.com/view/4845099e51e79b896802263f.html">第一篇</a>，<a href="http://wenku.baidu.com/view/34dd29add1f34693daef3e3f.html">第二篇</a>。</p>
+<p><img alt="" src="http://altynai-blog-images.qiniudn.com/2012/10/linkedin-cleo-1.png" /></p>
+<p>推荐的做法就是去运行一下它给的<a href="https://github.com/jingwei/cleo-prime">Demo</a>，其中有<code>Generic Typeahead</code>和<code>Network Typeahead</code>这两个部分，然后深入的去研究它的实现机理。</p>
+<p>好了，下面主要说一下对<code>Generic Typeahead</code>这块的理解（<code>Network Typeahead</code>这部分的道理与其基本一致）。</p>
+<p>假设现在有一些公司（Document）的列表，数据库中的每条记录就代表一个公司。每个公司都有自己的属性：编号（DocumentId），名称（Name ...</p>
+  </div>
+  <div id="article_more">
+  	<a class="button_more" href="http://localhost:8000/2012/10/linkedin-cleo/">More <i class=" icon-arrow-right"></i></a>
   </div>
 </article>
 
     <footer>
 	
+<div id="paginator">
+
+</div>
     </footer>
 
     <div id="ending_message">

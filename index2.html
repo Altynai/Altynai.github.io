@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- <link rel="stylesheet/less" type="text/css" href="http://localhost:8000/theme/css/style.less">
+  <script src="http://localhost:8000/theme/js/less-1.3.3.min.js" type="text/javascript"></script> test -->
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/theme/css/style.css"> 
+
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/theme/css/pygments.css">
+  <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=PT+Sans|PT+Serif|PT+Mono">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width; initial-scale=1.0">
+  <meta name="author" content="Altynai">
+  <meta name="description" content="Posts and writings by Altynai">
+  <link rel="shortcut icon" href="http://localhost:8000/theme/images/favicon.ico" type="image/x-icon" />
+
+
+  <title>
+Sideways  </title>
+
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+        <a href="http://localhost:8000">
+        <img src="http://localhost:8000/theme/images/logo.jpg" alt="logo">
+      </a>
+      <h2><a href="http://localhost:8000">Sideways</a></h2>
+      <p class="tagline">Reflections on life, code, movie, and the craft of writing..</p>
+      <div id="social_links">
+	<ul id="social_list">
+        <li><a href="https://github.com/Altynai" rel='me' target="_blank"><i class="icon-github icon-2x"></i></a></li>
+        <li><a href="http://weibo.com/u/2164187874" rel='me' target="_blank"><i class="icon-weibo icon-2x"></i></a></li>
+	</ul>
+      </div>
+      <ul>
+        <li><a  href="http://localhost:8000/pages/about-me.html">关于我</a></li>
+        <li><a  href="http://localhost:8000/archives.html">Archives</a></li>
+       </ul>
+    </div>
+    <div class="overlay">
+    </div>
+  </aside>
+
+  <main>
+     <header>
+		<p><a href="http://localhost:8000">Sideways</a>
+          </p>
+    </header>
+<article>
+  <div id="article_title">
+    <h1><a href="http://localhost:8000/2012/04/qtsdk4-8-mysql/">QT SDK4.8加载mysql驱动</a></h1>
+  </div>
+  <div id="article_text">
+    <p>应该有很多人和我一样，在这个蛋疼的问题上纠结了很久 = =
+因为能搜到的信息都是老版本的信息（多是2009年左右的信息），都没什么用。</p>
+<p>直接切入正题。</p>
+<p>先说下【我的环境】<code>win7 + QTSDK4.8 + mysql 5.5 + vs2010(编译器)</code></p>
+<p>我的QT路径为：<strong>E:\QtSDK\Desktop\Qt\4.8.0\msvc2010</strong></p>
+<p>mysql路径为：<strong>E:\Sever_AMD\mysql\MySQL Server 5.5</strong></p>
+<p>具体步骤如下：</p>
+<ul>
+<li>
+<p>先下载 <a href="http://download.qt.nokia.com/qt/source/qt-everywhere-opensource-src-4.8.0.zip">qt-everywhere-opensource-src-4.8.0.zip</a> 解压后把该文件夹下面的整个src文件夹复制到QT路径中</p>
+</li>
+<li>
+<p>复制mysql路径下面的<code>include</code>和<code>lib</code>文件夹到<strong>一个没有空格</strong>的路径下（比如<code>C:\mysql ...</code></p></li></ul>
+  </div>
+  <div id="article_more">
+  	<a class="button_more" href="http://localhost:8000/2012/04/qtsdk4-8-mysql/">More <i class=" icon-arrow-right"></i></a>
+  </div>
+</article>
+<hr />
+<article>
+  <div id="article_title">
+    <h1><a href="http://localhost:8000/2012/04/zoj-3606-lazy-salesgirl/">ZOJ 3606 Lazy Salesgirl</a></h1>
+  </div>
+  <div id="article_text">
+    <p><span style="color: #ff00ff;">【ZOJ
+3606】</span><a href="http://acm.zju.edu.cn/onlinejudge/showProblem.do?problemId=4709">http://acm.zju.edu.cn/onlinejudge/showProblem.do?problemId=4709</a></p>
+<p>今年浙江省省赛的G题，比赛的最后时刻是我去上去敲的，赛后才明白有个地方写挫了，以至于到比赛结束还没调好=
+=真见鬼。</p>
+<p>【题意】小女孩卖面包,有100000个顾客要来买(不会同一个时刻来两个顾客),现在有一个时间w,表示如果相邻两个顾客来的时间差严格大于w的话,小女孩在这个时间内会睡着,而新来的那个顾客不会买,只会把小女孩叫醒(既重新开始计算w),还有一点就是,第k个顾客买的面包数量为<code>(k-1)%3+1</code>,也就是<code>1,2,3,1,2,3....</code>这样的循环,现在让你求平均卖出价(卖得面包的总价/卖给的顾客数)最大的情况下的w最小
+= = 描述有点绕,还是不太明白的建议看下原题目的描述..</p>
+<p>【解法】</p>
+<p>线段树的每个节点维护以下值：</p>
+<ul>
+<li>cnt:线段内已经插入点的个数 ...</li></ul>
+  </div>
+  <div id="article_more">
+  	<a class="button_more" href="http://localhost:8000/2012/04/zoj-3606-lazy-salesgirl/">More <i class=" icon-arrow-right"></i></a>
+  </div>
+</article>
+<hr />
+<article>
+  <div id="article_title">
+    <h1><a href="http://localhost:8000/2012/04/after-provincial-programming-contest/">省赛及其之后</a></h1>
+  </div>
+  <div id="article_text">
+    <p>对于省赛，对于这块金牌，我感觉这是我们三个人组队以来配合的比较好的一次，过第7题的时候我甚至激动的叫了起来，虽然最后我上去敲的时候留下了一个大遗憾。最后的<a href="http://watashi.ws/file/zjp12rank.html">ranklist</a>，队名: <code>lancet</code></p>
+<p>这是<a href="http://needfed.com">叶神</a>的最后一场比赛，组队已经超过半年了，一起打了亚洲赛和省赛，感情很深，希望他退役后在其他领域有更加神的表现。</p>
+<p>以上就是简短的省赛印象。</p>
+<p>之后的话，还是有很多事情要做的，要去把泰坦尼克看了，这几天的话把简历弄好，试着去投几家【一副很想实习的样子
+=。=】</p>
+<p>感悟的话就不多写了，做好的眼下的每一件事！加油！</p>
+  </div>
+  <div id="article_more">
+  	<a class="button_more" href="http://localhost:8000/2012/04/after-provincial-programming-contest/">More <i class=" icon-arrow-right"></i></a>
+  </div>
+</article>
+<hr />
+<article>
+  <div id="article_title">
+    <h1><a href="http://localhost:8000/2012/03/30/">3月份的尾巴，是白羊座</a></h1>
+  </div>
+  <div id="article_text">
+    <blockquote>
+<p>Slow it down, make it stop.</p>
+<p>Or else my heart is going to pop.</p>
+</blockquote>
+<p>最近发生的事情：</p>
+<ul>
+<li>
+<p>自上周去了KTV之后，咳嗽断断续续，后来去医务室看了下，被诊断为“上呼吸道感染”，吃了2天的药，现在好多了，目测又可以去KTV了。我们寝室这伙人，开学7周了，已经去了4次KTV了，这个频繁度还是很高的。没办法，团购的价格真的好便宜，上周去的那家，8小时28块钱，还送啤酒爆米花，可惜设备一般般，不过这个价格实在是诱人。</p>
+</li>
+<li>
+<p>这周把驾校的理论考课程上完了，为什么世界上会有这么水的东西？每次都是去刷卡，去网吧稍微玩一会儿，然后马上刷卡回来了，去上课的大学生基本都是小和山高教区的人，以至于213这种公交车根本挤不上去。每次一刷卡结束，门口哗啦啦的出现一大波黄鱼车，空气里充斥着“小和山，石马，5块1个！”的喊叫声。</p>
+</li>
+<li>
+<p>上周打完了最后一场校赛，对自己的表现还是有点失望的 ...</p></li></ul>
+  </div>
+  <div id="article_more">
+  	<a class="button_more" href="http://localhost:8000/2012/03/30/">More <i class=" icon-arrow-right"></i></a>
+  </div>
+</article>
+<hr />
+<article>
+  <div id="article_title">
+    <h1><a href="http://localhost:8000/2012/03/zoj-3582/">ZOJ 3582 Back to the Past</a></h1>
+  </div>
+  <div id="article_text">
+    <p><span style="color: #ff00ff;">【ZOJ
+3582】</span><a href="http://acm.zju.edu.cn/onlinejudge/showProblem.do?problemCode=3582">http://acm.zju.edu.cn/onlinejudge/showProblem.do?problemCode=3582</a></p>
+<p>【题意】有两排灯,每排50个,每天每个灯都有p的概率变亮,变亮之后就不考虑此灯,当每排都有&gt;=m个灯亮时问题结束,求达到这个条件的天数的期望.</p>
+<p>【想法】</p>
+<p><code>dp[i][j]</code>表示两排分别亮了i盏和j盏灯的情况下,到问题结束的期望天数.</p>
+<p>假设现在这天第一排亮了a盏，第二排亮了b盏，$0\leqslant b \leqslant n - j$</p>
+<p>那么这个概率为$P(a,b) = \binom{n-i}{a} * p^{a} * (1-p)^{n-i-a} * \binom{n-j}{b} * p^{b} * (1-p)^{n-j-b}$ ...</p><script type= "text/javascript">
+    if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+        var mathjaxscript = document.createElement('script');
+        mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+        mathjaxscript.type = 'text/javascript';
+        mathjaxscript.src = 'https:' == document.location.protocol
+                ? 'https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'
+                : 'http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+        mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+            "MathJax.Hub.Config({" +
+            "    config: ['MMLorHTML.js']," +
+            "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+            "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+            "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+            "    displayAlign: 'center'," +
+            "    displayIndent: '0em'," +
+            "    showMathMenu: true," +
+            "    tex2jax: { " +
+            "        inlineMath: [ ['$','$'] ], " +
+            "        displayMath: [ ['$$','$$'] ]," +
+            "        processEscapes: true," +
+            "        preview: 'TeX'," +
+            "    }, " +
+            "    'HTML-CSS': { " +
+            "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'black ! important'} }" +
+            "    } " +
+            "}); ";
+        (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+    }
+</script>
+
+  </div>
+  <div id="article_more">
+  	<a class="button_more" href="http://localhost:8000/2012/03/zoj-3582/">More <i class=" icon-arrow-right"></i></a>
+  </div>
+</article>
+<hr />
+<article>
+  <div id="article_title">
+    <h1><a href="http://localhost:8000/2012/02/little-talk/">短期唠叨</a></h1>
+  </div>
+  <div id="article_text">
+    <p>我都不知道该以什么开头了，前段时间连绵不绝的雨天弄得自己没什么精神，好像大多时间都在发呆，想些什么都不知道，有时还翘了课，窝在寝室看电影。</p>
+<p>这周还是应该收收心了，把落下的QT和JavaEE的部分内容给补上。</p>
+<p>QT虽然看起来有点累，不过我时刻提醒自己，既然已经开始了，就应该好好的坚持下去。</p>
+<p>简单的写下自己近期的计划和感慨：</p>
+<ul>
+<li>
+<p>昨天lcs问我3.17 Hdu校赛要不要去参加一下，我二话没说回了一个“好的呀。”。他和ycc以前也去过一次的吧（印象中他们中的一个人提及过），希望到时别被虐的太惨。</p>
+</li>
+<li>
+<p>“212-213寝室大联欢”委员会决定于2月29号再搞一次，这日子4年也就这么赶上一次，计划就是早上去看《碟中碟4》（好吧，其实我是一直在等720P BluRay =。= 不过也快下档了，价格肯定便宜多了，索性就去电影院看了算了），然后下午欢唱5小时，上一次联欢从下午6点唱到第二天凌晨6点，整整12小时，真不知道当时我们每个人是怎么过下来的。</p>
+</li>
+<li>
+<p>去驾校报了名，4月份理论考，还有差不多1个半月的时间。</p>
+</li>
+<li>
+<p>接上条，4月10号好像有很多事情，《泰坦尼克号 in 3D》上映，生日，驾校理论考。</p>
+</li>
+<li>
+<p>我第一次看《泰坦尼克号》还是在很小的时候 ...</p></li></ul>
+  </div>
+  <div id="article_more">
+  	<a class="button_more" href="http://localhost:8000/2012/02/little-talk/">More <i class=" icon-arrow-right"></i></a>
+  </div>
+</article>
+<hr />
+<article>
+  <div id="article_title">
+    <h1><a href="http://localhost:8000/2012/02/12/">在变换的生命里，岁月，原是最大的小偷。</a></h1>
+  </div>
+  <div id="article_text">
+    <p><img alt="" src="http://farm8.staticflickr.com/7184/6862997141_0c60af9ae4_z.jpg" /></p>
+<p>明天就开学了。</p>
+<p>这个学期应该算说是超级空闲的，不上课的时间很多，1到8周的情况就是周2到周5白天都没课，好吧，可以自己学点东西了。当然了，ACM这条路还是会继续走下去的，兴趣这个东西，来劲了就不太容易放弃了。</p>
+<p>想想自己不会的不懂的还有很多，所以说，这个学期好好利用的话，对于自己的成长还是有很大的帮助的。</p>
+<p>今天下午，小奇打电话给我，问我是不是要考研，考的话顺便帮我去占个位子。对于考研的问题，我其实也想了蛮久的，之前想法也很多。最后的想法还是不考研了，原因的话，我有点怕失败，怕累，就这样，而且很早就想去找份工作，体会自己赚钱的辛酸和甜蜜。这点@一灰也应该想的和我一样的吧。</p>
+<p>今天看到了小媛同学的计划（<a href="http://www.xysay.com/archives/122">http://www.xysay.com/archives/122</a>），感觉开学前给自己下一个计划的单子是很好的想法，到学期末的时候，你知道自己这个学期干了点什么，又有哪些你没干或者没完成。而我的计划列表，可能太繁杂了，应该好好整理一下，这里就不列出来了。</p>
+<p>由于长时间饱受垃圾耳机的折磨，前几天下了狠心入手了ATH-CKM55。长篇大论的评价也就不写了，简单的说，这耳机真是不错 ...</p>
+  </div>
+  <div id="article_more">
+  	<a class="button_more" href="http://localhost:8000/2012/02/12/">More <i class=" icon-arrow-right"></i></a>
+  </div>
+</article>
+<hr />
+<article>
+  <div id="article_title">
+    <h1><a href="http://localhost:8000/2012/02/hdu-2513-dp/">Hdu 2513 DP</a></h1>
+  </div>
+  <div id="article_text">
+    <p><strong><span style="color: #ff00ff;">【Hdu
+2513】</span></strong>http://acm.hdu.edu.cn/showproblem.php?pid=2513  </p>
+<p>【题意】给你20*20的格子（一个蛋糕），有些格子上有樱桃，让你把蛋糕切成若干块，每块是矩形或者正方形，每块蛋糕上有且只有一个樱桃，求总的切的长度最小。  </p>
+<p>【想法】我的想法就是用一个状态dp[i][j][x][y]表示切（i,j）到（i+x-1,j+y-1）这个矩形的最小值。然后分情况讨论这个矩形。<br />
+1.矩形内没有樱桃<br />
+2.矩形内只有一个樱桃<br />
+3.矩形是1xN或者Nx1的规模<br />
+4.其他情况</p>
+<p>其实有几种情况可以合起来讨论的。  </p>
+<p>第4中情况只要枚举切行和切列的情况就可以了，我觉得要注意的地方就是切行和切列的时候要保证2块蛋糕上分别至少有1个樱桃，这样切才是合法的。</p>
+<p>最后很容易错的地方就是x,y这两重循环要写在最外面 ...</p>
+  </div>
+  <div id="article_more">
+  	<a class="button_more" href="http://localhost:8000/2012/02/hdu-2513-dp/">More <i class=" icon-arrow-right"></i></a>
+  </div>
+</article>
+<hr />
+<article>
+  <div id="article_title">
+    <h1><a href="http://localhost:8000/2011/12/merry-christmas/">听说明年的今天已经是新纪元的第X天了</a></h1>
+  </div>
+  <div id="article_text">
+    <p>好久没有写生活的文章了，不能再这么懒下去了。</p>
+<p>这学期在圣诞前夕落下了帷幕，由于16周周五没有课，所以比一些人算是早一天结束了学期。个人觉得这个学期过的有点小难受。原因也有好多。</p>
+<p>首先，比较偏文的课，点名了说，软件工程，感觉上课听了啥下课就立马就忘光了，学期过半之后糊糊涂涂的跟着别人在做那个软工的大作业，虽然学到了点什么，但比起老师上课的，感觉还是差了好多，下周开始好好复习了；然后就是期末的各种大型实验了，Delphi，OS，Linux：Delphi我是花了大概3天弄好的，虽然弄的不是很完善，但大致样子是出来了，验收的时候还是有点小紧张的，生怕老师问到不完善的那几个部分，结果验收过程还算顺利，老师只问了一个很简单的问题；OS的大型实验，我偷懒了，选了比较简单的那个做，也就是分析inode.c的功能和作用，写个报告就好，验收的时候排队等了好久，验收之前比Delphi验收还紧张，结果也还算顺利，就这么水过了。那么，接下来到考试的这段时间，就好好复习软工和OS了，顺带做一点Linux大型实验。</p>
+<p>平安夜晚上班级聚了一个餐吃火锅，差不多30多个人2大桌，略挤。好像大家都很饿的样子，菜马上就被消灭完了，连油面筋都没抢到几个。大家有说有笑，热热闹闹的吃吃喝喝 ...</p>
+  </div>
+  <div id="article_more">
+  	<a class="button_more" href="http://localhost:8000/2011/12/merry-christmas/">More <i class=" icon-arrow-right"></i></a>
+  </div>
+</article>
+<hr />
+<article>
+  <div id="article_title">
+    <h1><a href="http://localhost:8000/2011/12/zjut-1783/">ZJUT 1783 线段树 lazy标记</a></h1>
+  </div>
+  <div id="article_text">
+    <p><span style="color: #ff00ff;">【ZJUT
+1783】</span><a href="http://acm.zjut.edu.cn/ShowProblem.aspx?ShowID=1783">http://acm.zjut.edu.cn/ShowProblem.aspx?ShowID=1783</a></p>
+<p>今天圣诞赛现场赛的B题。坑爹的<code>push_down</code>函数写错了，卡了一个小时。</p>
+<p>题目的意思很简单，就是在某个区间插入一个等差数列，然后查询某区间的和，所以我想到的是用low和up来维护等差数列的首项和末项，因为对于一个固定的区间，这个等差数列是唯一的。然后就是要lazy标记，方法和经典的"成段更新求和"类似，关键还是<code>push_down</code>函数千万不能写错！</p>
+<div class="highlight"><pre><span class="cp">#define N 100005</span>
+<span class="cp">#define ll long long</span>
+<span class="cp">#define eps 1e-7</span>
+
+<span class="cp">#define lchild(id) (id&lt;&lt;1)</span>
+<span class="cp">#define rchild(id) ((id&lt;&lt;1)|1 ...</span></pre></div>
+  </div>
+  <div id="article_more">
+  	<a class="button_more" href="http://localhost:8000/2011/12/zjut-1783/">More <i class=" icon-arrow-right"></i></a>
+  </div>
+</article>
+
+    <footer>
+	
+<div id="paginator">
+	<div id="next_page_left">
+		<a href="http://localhost:8000/index3.html" class="button_accent"><i class="icon-arrow-left"></i> Older Posts</a>
+	</div>
+
+	<div id="next_page_right">
+		<a href="http://localhost:8000/index.html" class="button_accent">Newer Posts <i class="icon-arrow-right"></i></a>
+	</div>
+</div>
+    </footer>
+
+    <div id="ending_message">
+      <p>&copy Geoffrey Gimse. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme adapted from pelican-svbhack available on <a href="https://github.com/giulivo/pelican-svbhack" target="_blank">github</a>. Many of the images used on this site are in the Public Domain and available from <a href="http://openclipart.org" target="_blank">Openclipart</a>.</p>
+    </div>
+  </main>
+</body>
+</html>

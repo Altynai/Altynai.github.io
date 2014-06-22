@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- <link rel="stylesheet/less" type="text/css" href="http://localhost:8000/theme/css/style.less">
+  <script src="http://localhost:8000/theme/js/less-1.3.3.min.js" type="text/javascript"></script> test -->
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/theme/css/style.css"> 
+
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/theme/css/pygments.css">
+  <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=PT+Sans|PT+Serif|PT+Mono">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width; initial-scale=1.0">
+  <meta name="author" content="Altynai">
+  <meta name="description" content="Posts and writings by Altynai">
+  <link rel="shortcut icon" href="http://localhost:8000/theme/images/favicon.ico" type="image/x-icon" />
+
+<meta name="keywords" content="DP, ACM">
+
+  <title>
+hdu 3962 & hdu 2243 & zjut 1734 AC自动机,矩阵,DP  </title>
+
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+        <a href="http://localhost:8000">
+        <img src="http://localhost:8000/theme/images/logo.jpg" alt="logo">
+      </a>
+      <h2><a href="http://localhost:8000">Sideways</a></h2>
+      <p class="tagline">Reflections on life, code, movie, and the craft of writing..</p>
+      <div id="social_links">
+	<ul id="social_list">
+        <li><a href="https://github.com/Altynai" rel='me' target="_blank"><i class="icon-github icon-2x"></i></a></li>
+        <li><a href="http://weibo.com/u/2164187874" rel='me' target="_blank"><i class="icon-weibo icon-2x"></i></a></li>
+	</ul>
+      </div>
+      <ul>
+        <li><a  href="http://localhost:8000/pages/about-me.html">关于我</a></li>
+        <li><a  href="http://localhost:8000/archives.html">Archives</a></li>
+       </ul>
+    </div>
+    <div class="overlay">
+    </div>
+  </aside>
+
+  <main>
+     <header>
+<p>Posted on Tue 20 September 2011</p>
+    </header>
+<article>
+  <div id="article_title">
+    <h1><a href="http://localhost:8000/2011/09/auto-ac-matrix-dp/">hdu 3962 & hdu 2243 & zjut 1734 AC自动机,矩阵,DP</a></h1>
+  </div>
+  <div id="article_text">
+    <p><span style="color: #ff00ff;">[hdu
+3962]</span> <a href="http://acm.hdu.edu.cn/showproblem.php?pid=3962">http://acm.hdu.edu.cn/showproblem.php?pid=3962</a></p>
+<p>题目大意：给你N个DNA片段，问你长度为L的DNA中至少包含2个给定片段的种数。</p>
+<p>思路：想到一共的种数为<code>4^L</code>，我们只要减去不包含和只包含1个给点片段的种数。</p>
+<p>首先，构造好自动机，然后就是构造矩阵。假设自动机一共有n个结点（包括）root，编号0,1....n-1，矩阵的规模为（2n
+X 2n）</p>
+<ul>
+<li>
+<p>i点（0≤i＜n）表示到trie图中i点不经过危险结点的路径数</p>
+</li>
+<li>
+<p>i点（n≤i＜2*n）表示到trie图中i-n点经过一次危险结点的路径数</p>
+</li>
+</ul>
+<p>所以，对于i点（0≤i＜n）的每一个儿子结点j：</p>
+<p>如果j是安全结点，<code>matrix[i][j]++ matrix[i+n][j+n]++</code></p>
+<p>否则<code>matrix[i][j+n]++</code></p>
+<div class="highlight"><pre><span class="cp">#include &lt;iostream&gt;</span>
+<span class="cp">#include &lt;algorithm&gt;</span>
+<span class="cp">#include &lt;queue&gt;</span>
+<span class="cp">#include &lt;string&gt;</span>
+<span class="cp">#include &lt;cstdio&gt;</span>
+<span class="cp">#include &lt;set&gt;</span>
+<span class="cp">#define N 4</span>
+<span class="cp">#define M 70</span>
+<span class="cp">#define mod 10007</span>
+<span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
+<span class="kt">int</span> <span class="n">n</span><span class="p">,</span><span class="n">L</span><span class="p">;</span>
+<span class="kt">char</span> <span class="n">ch</span><span class="p">[</span><span class="n">M</span><span class="p">];</span>
+
+<span class="c1">//以上题目所需数据</span>
+<span class="kr">inline</span> <span class="kt">int</span> <span class="nf">toInt</span><span class="p">(</span><span class="kt">char</span> <span class="n">c</span><span class="p">){</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">c</span><span class="o">==</span><span class="sc">&#39;A&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">c</span><span class="o">==</span><span class="sc">&#39;C&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">c</span><span class="o">==</span><span class="sc">&#39;G&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="mi">2</span><span class="p">;</span>
+    <span class="k">else</span>
+        <span class="k">return</span> <span class="mi">3</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="kt">int</span> <span class="n">root</span><span class="p">,</span><span class="n">tot</span><span class="p">;</span>
+<span class="kt">int</span> <span class="n">que</span><span class="p">[</span><span class="n">M</span><span class="p">],</span><span class="n">head</span><span class="p">,</span><span class="n">tail</span><span class="p">;</span>
+<span class="k">struct</span> <span class="n">Node</span>
+<span class="p">{</span>
+    <span class="kt">int</span> <span class="n">child</span><span class="p">[</span><span class="n">N</span><span class="p">],</span><span class="n">fail</span><span class="p">,</span><span class="n">flag</span><span class="p">;</span>
+
+    <span class="kt">void</span> <span class="nf">init</span><span class="p">(){</span>
+        <span class="n">memset</span><span class="p">(</span><span class="n">child</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="k">sizeof</span><span class="p">(</span><span class="n">child</span><span class="p">));</span>
+        <span class="n">fail</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span><span class="n">flag</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span><span class="n">T</span><span class="p">[</span><span class="n">M</span><span class="p">];</span>
+
+<span class="kt">void</span> <span class="nf">init</span><span class="p">(){</span>
+    <span class="n">root</span><span class="o">=</span><span class="n">tot</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+    <span class="n">T</span><span class="p">[</span><span class="n">root</span><span class="p">].</span><span class="n">init</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">insert</span><span class="p">(</span><span class="kt">char</span><span class="o">*</span> <span class="n">s</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">int</span> <span class="n">p</span><span class="o">=</span><span class="n">root</span><span class="p">,</span><span class="n">index</span><span class="p">;</span>
+    <span class="k">while</span><span class="p">(</span><span class="o">*</span><span class="n">s</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">index</span><span class="o">=</span><span class="n">toInt</span><span class="p">(</span><span class="o">*</span><span class="n">s</span><span class="p">);</span>
+        <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">T</span><span class="p">[</span><span class="n">p</span><span class="p">].</span><span class="n">child</span><span class="p">[</span><span class="n">index</span><span class="p">]){</span>
+            <span class="n">T</span><span class="p">[</span><span class="o">++</span><span class="n">tot</span><span class="p">].</span><span class="n">init</span><span class="p">();</span>
+            <span class="n">T</span><span class="p">[</span><span class="n">p</span><span class="p">].</span><span class="n">child</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">=</span><span class="n">tot</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="n">p</span><span class="o">=</span><span class="n">T</span><span class="p">[</span><span class="n">p</span><span class="p">].</span><span class="n">child</span><span class="p">[</span><span class="n">index</span><span class="p">];</span>
+        <span class="n">s</span><span class="o">++</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">T</span><span class="p">[</span><span class="n">p</span><span class="p">].</span><span class="n">flag</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">build_ac_auto</span><span class="p">(){</span>
+    <span class="n">head</span><span class="o">=</span><span class="n">tail</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+    <span class="n">que</span><span class="p">[</span><span class="n">tail</span><span class="o">++</span><span class="p">]</span><span class="o">=</span><span class="n">root</span><span class="p">;</span>
+
+    <span class="kt">int</span> <span class="n">u</span><span class="p">,</span><span class="n">son</span><span class="p">,</span><span class="n">p</span><span class="p">;</span>
+    <span class="k">while</span><span class="p">(</span><span class="n">head</span><span class="o">&lt;</span><span class="n">tail</span><span class="p">){</span>
+        <span class="n">u</span><span class="o">=</span><span class="n">que</span><span class="p">[</span><span class="n">head</span><span class="o">++</span><span class="p">];</span>
+        <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">N</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">){</span>
+            <span class="k">if</span><span class="p">(</span><span class="n">T</span><span class="p">[</span><span class="n">u</span><span class="p">].</span><span class="n">child</span><span class="p">[</span><span class="n">i</span><span class="p">]){</span>
+                <span class="n">son</span><span class="o">=</span><span class="n">T</span><span class="p">[</span><span class="n">u</span><span class="p">].</span><span class="n">child</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+                <span class="n">p</span><span class="o">=</span><span class="n">T</span><span class="p">[</span><span class="n">u</span><span class="p">].</span><span class="n">fail</span><span class="p">;</span>
+                <span class="k">if</span><span class="p">(</span><span class="n">u</span><span class="o">==</span><span class="n">root</span><span class="p">)</span>
+                    <span class="n">T</span><span class="p">[</span><span class="n">son</span><span class="p">].</span><span class="n">fail</span><span class="o">=</span><span class="n">root</span><span class="p">;</span><span class="c1">//第二层的fail直接指向root</span>
+                <span class="k">else</span>
+                <span class="p">{</span>
+                    <span class="n">T</span><span class="p">[</span><span class="n">son</span><span class="p">].</span><span class="n">fail</span><span class="o">=</span><span class="n">T</span><span class="p">[</span><span class="n">p</span><span class="p">].</span><span class="n">child</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+                    <span class="n">T</span><span class="p">[</span><span class="n">son</span><span class="p">].</span><span class="n">flag</span><span class="o">|=</span><span class="n">T</span><span class="p">[</span> <span class="n">T</span><span class="p">[</span><span class="n">son</span><span class="p">].</span><span class="n">fail</span> <span class="p">].</span><span class="n">flag</span><span class="p">;</span>
+                <span class="p">}</span>
+                <span class="n">que</span><span class="p">[</span><span class="n">tail</span><span class="o">++</span><span class="p">]</span><span class="o">=</span><span class="n">son</span><span class="p">;</span>
+            <span class="p">}</span><span class="k">else</span><span class="p">{</span><span class="c1">//trie图中从根出发不存在,直接设立虚拟节点,即root</span>
+                <span class="n">p</span><span class="o">=</span><span class="n">T</span><span class="p">[</span><span class="n">u</span><span class="p">].</span><span class="n">fail</span><span class="p">;</span>
+                <span class="k">if</span><span class="p">(</span><span class="n">u</span><span class="o">==</span><span class="n">root</span><span class="p">)</span>
+                    <span class="n">T</span><span class="p">[</span><span class="n">u</span><span class="p">].</span><span class="n">child</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">root</span><span class="p">;</span>
+                <span class="k">else</span>
+                    <span class="n">T</span><span class="p">[</span><span class="n">u</span><span class="p">].</span><span class="n">child</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">T</span><span class="p">[</span><span class="n">p</span><span class="p">].</span><span class="n">child</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">//以上自动机结束</span>
+
+<span class="kr">inline</span> <span class="kt">int</span> <span class="nf">toId</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="p">,</span><span class="kt">int</span> <span class="n">bi</span><span class="p">){</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">bi</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">i</span><span class="p">;</span>
+    <span class="k">else</span>
+        <span class="k">return</span> <span class="n">i</span><span class="o">+</span><span class="n">tot</span><span class="o">+</span><span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kr">inline</span> <span class="kt">int</span> <span class="nf">Pow</span><span class="p">(</span><span class="kt">int</span> <span class="n">n</span><span class="p">,</span><span class="kt">int</span> <span class="n">L</span><span class="p">){</span>
+    <span class="kt">int</span> <span class="n">res</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span>
+    <span class="k">while</span><span class="p">(</span><span class="n">L</span><span class="p">){</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">L</span><span class="o">&amp;</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">res</span><span class="o">=</span><span class="n">res</span><span class="o">*</span><span class="n">n</span><span class="p">;</span>
+        <span class="n">n</span><span class="o">*=</span><span class="n">n</span><span class="p">;</span>
+        <span class="n">res</span><span class="o">%=</span><span class="n">mod</span><span class="p">;</span>
+        <span class="n">n</span><span class="o">%=</span><span class="n">mod</span><span class="p">;</span>
+        <span class="n">L</span><span class="o">&gt;&gt;=</span><span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">res</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="k">struct</span> <span class="n">Matrix</span>
+<span class="p">{</span>
+    <span class="kt">int</span> <span class="n">mat</span><span class="p">[</span><span class="n">M</span><span class="p">][</span><span class="n">M</span><span class="p">];</span>
+    <span class="kt">void</span> <span class="nf">init</span><span class="p">(){</span>
+        <span class="n">memset</span><span class="p">(</span><span class="n">mat</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="k">sizeof</span><span class="p">(</span><span class="n">mat</span><span class="p">));</span>
+    <span class="p">}</span>
+    <span class="kt">void</span> <span class="nf">one</span><span class="p">(){</span>
+        <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">M</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">)</span>
+            <span class="n">mat</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="kt">void</span> <span class="nf">put</span><span class="p">(</span><span class="kt">int</span> <span class="n">n</span><span class="p">){</span>
+        <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;=</span><span class="n">n</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">){</span>
+            <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">j</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">j</span><span class="o">&lt;=</span><span class="n">n</span><span class="p">;</span><span class="n">j</span><span class="o">++</span><span class="p">)</span>
+                <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d &quot;</span><span class="p">,</span><span class="n">mat</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]);</span>
+            <span class="n">puts</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="n">puts</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">friend</span> <span class="n">Matrix</span> <span class="k">operator</span><span class="o">*</span><span class="p">(</span><span class="k">const</span> <span class="n">Matrix</span><span class="o">&amp;</span> <span class="n">a</span><span class="p">,</span><span class="k">const</span> <span class="n">Matrix</span><span class="o">&amp;</span> <span class="n">b</span><span class="p">){</span>
+        <span class="n">Matrix</span> <span class="n">res</span><span class="p">;</span>
+        <span class="n">res</span><span class="p">.</span><span class="n">init</span><span class="p">();</span>
+        <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">M</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">){</span>
+            <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">j</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">j</span><span class="o">&lt;</span><span class="n">M</span><span class="p">;</span><span class="n">j</span><span class="o">++</span><span class="p">){</span>
+                <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">k</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">k</span><span class="o">&lt;</span><span class="n">M</span><span class="p">;</span><span class="n">k</span><span class="o">++</span><span class="p">){</span>
+                    <span class="n">res</span><span class="p">.</span><span class="n">mat</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span><span class="o">+=</span><span class="n">a</span><span class="p">.</span><span class="n">mat</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">k</span><span class="p">]</span><span class="o">*</span><span class="n">b</span><span class="p">.</span><span class="n">mat</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="n">j</span><span class="p">];</span>
+                    <span class="n">res</span><span class="p">.</span><span class="n">mat</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span><span class="o">%=</span><span class="n">mod</span><span class="p">;</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">res</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span><span class="n">op</span><span class="p">,</span><span class="n">ymd</span><span class="p">;</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="cp">#ifndef ONLINE_JUDGE</span>
+    <span class="n">freopen</span><span class="p">(</span><span class="s">&quot;in.txt&quot;</span><span class="p">,</span><span class="s">&quot;r&quot;</span><span class="p">,</span><span class="n">stdin</span><span class="p">);</span>
+    <span class="n">freopen</span><span class="p">(</span><span class="s">&quot;out.txt&quot;</span><span class="p">,</span><span class="s">&quot;w&quot;</span><span class="p">,</span><span class="n">stdout</span><span class="p">);</span>
+<span class="cp">#endif</span>
+
+    <span class="kt">int</span> <span class="n">cas</span><span class="p">,</span><span class="n">pcas</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span>
+    <span class="c1">//scanf(&quot;%d&quot;,&amp;cas);</span>
+    <span class="k">while</span><span class="p">(</span><span class="n">scanf</span><span class="p">(</span><span class="s">&quot;%d%d&quot;</span><span class="p">,</span><span class="o">&amp;</span><span class="n">n</span><span class="p">,</span><span class="o">&amp;</span><span class="n">L</span><span class="p">)</span><span class="o">!=</span><span class="n">EOF</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">init</span><span class="p">();</span>
+        <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">n</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">){</span>
+            <span class="n">scanf</span><span class="p">(</span><span class="s">&quot;%s&quot;</span><span class="p">,</span><span class="o">&amp;</span><span class="n">ch</span><span class="p">);</span>
+            <span class="n">insert</span><span class="p">(</span><span class="n">ch</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="n">build_ac_auto</span><span class="p">();</span>
+
+        <span class="kt">int</span> <span class="n">ans</span><span class="o">=</span><span class="n">Pow</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="n">L</span><span class="p">);</span>
+        <span class="n">op</span><span class="p">.</span><span class="n">init</span><span class="p">();</span>
+        <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;=</span><span class="n">tot</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">){</span>
+            <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">j</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">j</span><span class="o">&lt;</span><span class="n">N</span><span class="p">;</span><span class="n">j</span><span class="o">++</span><span class="p">){</span>
+                <span class="kt">int</span> <span class="n">id</span><span class="o">=</span><span class="n">T</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">child</span><span class="p">[</span><span class="n">j</span><span class="p">];</span>
+                <span class="k">if</span><span class="p">(</span><span class="n">T</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">flag</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span>
+                    <span class="n">op</span><span class="p">.</span><span class="n">mat</span><span class="p">[</span><span class="n">toId</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">)][</span><span class="n">toId</span><span class="p">(</span><span class="n">id</span><span class="p">,</span><span class="mi">0</span><span class="p">)]</span><span class="o">++</span><span class="p">;</span>
+                <span class="k">else</span>
+                    <span class="n">op</span><span class="p">.</span><span class="n">mat</span><span class="p">[</span><span class="n">toId</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">)][</span><span class="n">toId</span><span class="p">(</span><span class="n">id</span><span class="p">,</span><span class="mi">1</span><span class="p">)]</span><span class="o">++</span><span class="p">;</span>
+                <span class="k">if</span><span class="p">(</span><span class="n">T</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">flag</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span>
+                    <span class="n">op</span><span class="p">.</span><span class="n">mat</span><span class="p">[</span><span class="n">toId</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">)][</span><span class="n">toId</span><span class="p">(</span><span class="n">id</span><span class="p">,</span><span class="mi">1</span><span class="p">)]</span><span class="o">++</span><span class="p">;</span>
+            <span class="p">}</span>
+
+        <span class="p">}</span>
+        <span class="n">ymd</span><span class="p">.</span><span class="n">init</span><span class="p">();</span>
+        <span class="n">ymd</span><span class="p">.</span><span class="n">one</span><span class="p">();</span>
+        <span class="k">while</span><span class="p">(</span><span class="n">L</span><span class="p">){</span>
+            <span class="k">if</span><span class="p">(</span><span class="n">L</span><span class="o">&amp;</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">ymd</span><span class="o">=</span><span class="n">ymd</span><span class="o">*</span><span class="n">op</span><span class="p">;</span>
+            <span class="n">op</span><span class="o">=</span><span class="n">op</span><span class="o">*</span><span class="n">op</span><span class="p">;</span>
+            <span class="n">L</span><span class="o">&gt;&gt;=</span><span class="mi">1</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">j</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">j</span><span class="o">&lt;=</span><span class="n">tot</span><span class="p">;</span><span class="n">j</span><span class="o">++</span><span class="p">){</span>
+            <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">k</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">k</span><span class="o">&lt;</span><span class="mi">2</span><span class="p">;</span><span class="n">k</span><span class="o">++</span><span class="p">){</span>
+                <span class="n">ans</span><span class="o">-=</span><span class="n">ymd</span><span class="p">.</span><span class="n">mat</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">toId</span><span class="p">(</span><span class="n">j</span><span class="p">,</span><span class="n">k</span><span class="p">)];</span>
+                <span class="k">if</span><span class="p">(</span><span class="n">ans</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">)</span>
+                    <span class="n">ans</span><span class="o">+=</span><span class="n">mod</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">ans</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">ans</span><span class="o">+=</span><span class="n">mod</span><span class="p">;</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="n">ans</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p><span style="color: #ff00ff;">[hdu
+2243]</span> <a href="http://acm.hdu.edu.cn/showproblem.php?pid=2243">http://acm.hdu.edu.cn/showproblem.php?pid=2243</a></p>
+<p>题目大意：给你N个词根，问你长度≤L的单词中至少包含1个给定片段的种数。</p>
+<p>思路：一共的种数为<code>26^1+26^2+....+26^L</code>，我们只要减去不包含词根种数。</p>
+<p>方法和上面一题一样，只不过矩阵规模n X n</p>
+<p>对于i点（0≤i＜n）的每一个儿子结点j:</p>
+<p>如果i和j都是安全结点，<code>matrix[i][j]++</code></p>
+<p>然后就是求矩阵<code>A + A^2 + A^3 + .... + A^L</code>,这个就是经典的双重2分题目了。</p>
+<p>详细可见<span style="color: #ff00ff;">[poj
+3233] </span><a href="http://acm.pku.edu.cn/JudgeOnline/problem?id=3233">http://acm.pku.edu.cn/JudgeOnline/problem?id=3233</a></p>
+<p>这题由于是mod 2^64 所以只要用<code>unsigned long long</code>就行了，因为溢出截取的低位部分范围就是<code>[0,2^64)</code></p>
+<p>代码就不贴了~上面的这个代码稍微改一下就行了。</p>
+<p><span style="color: #ff00ff;">[zjut
+1734]</span> <a href="http://acm.zjut.edu.cn/ShowProblem.aspx?ShowID=1734">http://acm.zjut.edu.cn/ShowProblem.aspx?ShowID=1734</a></p>
+<p>同样的，先构造好自动机，然后处理dp部分。dp[i][j]表示第i天到trie图中的第j个结点还存活的概率。</p>
+<p>由于给出单细胞的初始序列，我们可以根据这个序列，看看初始在root点经过这个序列跑到了trie图中的哪个点，假如是A点，那么初始化dp[0][A]=1.0</p>
+<p>转移：对于i结点的儿子j，如果i，j都是安全结点，<code>dp[k+1][j]+=dp[k][i]*P(a,c,g,t)</code></p>
+<p>代码忘记存了 = = 不过应该还好敲的吧。</p>
+  </div>
+  <div id="article_meta">
+  	<p>Author: <a href="http://localhost:8000/author/altynai.html">Altynai</a></p>
+    <p>Category: <a href="http://localhost:8000/category/code.html">Code</a></p>
+    <p>Tags:
+      <a href="http://localhost:8000/tag/dp.html">DP</a>,      <a href="http://localhost:8000/tag/acm.html">ACM</a>    </p>
+  </div>
+    <div class="comments">
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_identifier = "2011/09/auto-ac-matrix-dp/";
+        var disqus_url = "http://localhost:8000/2011/09/auto-ac-matrix-dp/";
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://Sideways.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+    </div>
+</article>
+
+    <footer>
+	
+<p><a href="http://localhost:8000/" class="button_accent">&larr; Back to Index</a></p>
+    </footer>
+
+    <div id="ending_message">
+      <p>&copy Geoffrey Gimse. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme adapted from pelican-svbhack available on <a href="https://github.com/giulivo/pelican-svbhack" target="_blank">github</a>. Many of the images used on this site are in the Public Domain and available from <a href="http://openclipart.org" target="_blank">Openclipart</a>.</p>
+    </div>
+  </main>
+</body>
+</html>

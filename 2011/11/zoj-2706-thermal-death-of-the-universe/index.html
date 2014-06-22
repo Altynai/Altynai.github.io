@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- <link rel="stylesheet/less" type="text/css" href="http://localhost:8000/theme/css/style.less">
+  <script src="http://localhost:8000/theme/js/less-1.3.3.min.js" type="text/javascript"></script> test -->
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/theme/css/style.css"> 
+
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/theme/css/pygments.css">
+  <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=PT+Sans|PT+Serif|PT+Mono">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width; initial-scale=1.0">
+  <meta name="author" content="Altynai">
+  <meta name="description" content="Posts and writings by Altynai">
+  <link rel="shortcut icon" href="http://localhost:8000/theme/images/favicon.ico" type="image/x-icon" />
+
+<meta name="keywords" content="ACM">
+
+  <title>
+ZOJ 2706 Thermal Death of the Universe  </title>
+
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+        <a href="http://localhost:8000">
+        <img src="http://localhost:8000/theme/images/logo.jpg" alt="logo">
+      </a>
+      <h2><a href="http://localhost:8000">Sideways</a></h2>
+      <p class="tagline">Reflections on life, code, movie, and the craft of writing..</p>
+      <div id="social_links">
+	<ul id="social_list">
+        <li><a href="https://github.com/Altynai" rel='me' target="_blank"><i class="icon-github icon-2x"></i></a></li>
+        <li><a href="http://weibo.com/u/2164187874" rel='me' target="_blank"><i class="icon-weibo icon-2x"></i></a></li>
+	</ul>
+      </div>
+      <ul>
+        <li><a  href="http://localhost:8000/pages/about-me.html">关于我</a></li>
+        <li><a  href="http://localhost:8000/archives.html">Archives</a></li>
+       </ul>
+    </div>
+    <div class="overlay">
+    </div>
+  </aside>
+
+  <main>
+     <header>
+<p>Posted on Sun 06 November 2011</p>
+    </header>
+<article>
+  <div id="article_title">
+    <h1><a href="http://localhost:8000/2011/11/zoj-2706-thermal-death-of-the-universe/">ZOJ 2706 Thermal Death of the Universe</a></h1>
+  </div>
+  <div id="article_text">
+    <p><span style="color: #ff00ff;"><strong>【ZOJ
+2706】</strong></span><a href="http://acm.zju.edu.cn/onlinejudge/showProblem.do?problemCode=2706">http://acm.zju.edu.cn/onlinejudge/showProblem.do?problemCode=2706</a></p>
+<p>题意：给你一个30,000的序列，然后有30,000个操作，每个操作把某个区间的所有值变成这个区间的平均数，小数四舍五入的原则给定，求最后的序列。</p>
+<p>这题很显然是线段树，而且需要lazy操作（lazy为true表示当前整段是否相同），lazy操作需要的地方：<span
+style="color: #ff00ff;">update（区间更新）、Search（得到区间sum）和query（去除所有的lazy标记，得到最后的序列）</span>，一开始死活都没有发现WA在哪里，后来才发现Search（得到区间sum）操作的时候忘记lazy的pushdown操作了，这个下次要注意。</p>
+<p>还有一点要注意的就是区间的和为负数的情况，这样ceil和floor和整数是不一样的。</p>
+<div class="highlight"><pre><span class="cp">#include &lt;iostream&gt;</span>
+<span class="cp">#include &lt;cstdio&gt;</span>
+<span class="cp">#include &lt;cstring&gt;</span>
+<span class="cp">#include &lt;string&gt;</span>
+<span class="cp">#include &lt;algorithm&gt;</span>
+<span class="cp">#include &lt;cmath&gt;</span>
+<span class="cp">#include &lt;stack&gt;</span>
+<span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
+<span class="cp">#define N 30005</span>
+<span class="cp">#define ll long long</span>
+
+<span class="k">struct</span> <span class="n">Node</span><span class="p">{</span>
+    <span class="kt">int</span> <span class="n">l</span><span class="p">,</span><span class="n">r</span><span class="p">;</span>
+    <span class="n">ll</span> <span class="n">sum</span><span class="p">,</span><span class="n">v</span><span class="p">;</span>
+    <span class="kt">bool</span> <span class="n">lazy</span><span class="p">;</span>
+
+    <span class="kt">void</span> <span class="nf">mark</span><span class="p">(</span><span class="n">ll</span> <span class="n">v</span><span class="p">){</span>
+        <span class="k">this</span><span class="o">-&gt;</span><span class="n">v</span><span class="o">=</span><span class="n">v</span><span class="p">;</span>
+        <span class="n">lazy</span><span class="o">=</span><span class="nb">true</span><span class="p">;</span>
+        <span class="n">sum</span><span class="o">=</span><span class="n">v</span><span class="o">*</span><span class="p">(</span><span class="n">r</span><span class="o">-</span><span class="n">l</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span><span class="n">seg</span><span class="p">[</span><span class="n">N</span><span class="o">&lt;&lt;</span><span class="mi">2</span><span class="p">];</span>
+
+<span class="n">ll</span> <span class="n">val</span><span class="p">[</span><span class="n">N</span><span class="p">],</span><span class="n">oldSum</span><span class="p">,</span><span class="n">curSum</span><span class="p">,</span><span class="n">segSum</span><span class="p">;</span>
+<span class="kt">int</span> <span class="n">n</span><span class="p">,</span><span class="n">m</span><span class="p">;</span>
+
+<span class="kt">void</span> <span class="nf">build</span><span class="p">(</span><span class="kt">int</span> <span class="n">l</span><span class="p">,</span><span class="kt">int</span> <span class="n">r</span><span class="p">,</span><span class="kt">int</span> <span class="n">id</span><span class="p">){</span>
+    <span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">l</span><span class="o">=</span><span class="n">l</span><span class="p">;</span>
+    <span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">r</span><span class="o">=</span><span class="n">r</span><span class="p">;</span>
+    <span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">lazy</span><span class="o">=</span><span class="nb">false</span><span class="p">;</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">l</span><span class="o">==</span><span class="n">r</span><span class="p">){</span>
+        <span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">sum</span><span class="o">=</span><span class="n">val</span><span class="p">[</span><span class="n">l</span><span class="p">];</span>
+        <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="kt">int</span> <span class="n">mid</span><span class="o">=</span><span class="p">(</span><span class="n">l</span><span class="o">+</span><span class="n">r</span><span class="p">)</span><span class="o">&gt;&gt;</span><span class="mi">1</span><span class="p">;</span>
+    <span class="n">build</span><span class="p">(</span><span class="n">l</span><span class="p">,</span><span class="n">mid</span><span class="p">,</span><span class="n">id</span><span class="o">&lt;&lt;</span><span class="mi">1</span><span class="p">);</span>
+    <span class="n">build</span><span class="p">(</span><span class="n">mid</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">id</span><span class="o">&lt;&lt;</span><span class="mi">1</span><span class="o">|</span><span class="mi">1</span><span class="p">);</span>
+    <span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">sum</span><span class="o">=</span><span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="o">&lt;&lt;</span><span class="mi">1</span><span class="p">].</span><span class="n">sum</span><span class="o">+</span><span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="o">&lt;&lt;</span><span class="mi">1</span><span class="o">|</span><span class="mi">1</span><span class="p">].</span><span class="n">sum</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">update</span><span class="p">(</span><span class="kt">int</span> <span class="n">l</span><span class="p">,</span><span class="kt">int</span> <span class="n">r</span><span class="p">,</span><span class="kt">int</span> <span class="n">id</span><span class="p">,</span><span class="n">ll</span> <span class="n">average</span><span class="p">){</span>
+
+    <span class="k">if</span><span class="p">(</span><span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">l</span><span class="o">==</span><span class="n">l</span> <span class="o">&amp;&amp;</span> <span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">r</span><span class="o">==</span><span class="n">r</span><span class="p">){</span>
+        <span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">mark</span><span class="p">(</span><span class="n">average</span><span class="p">);</span>
+        <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span><span class="p">(</span><span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">lazy</span><span class="p">){</span>
+        <span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="o">&lt;&lt;</span><span class="mi">1</span><span class="p">].</span><span class="n">mark</span><span class="p">(</span><span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">v</span><span class="p">);</span>
+        <span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="o">&lt;&lt;</span><span class="mi">1</span><span class="o">|</span><span class="mi">1</span><span class="p">].</span><span class="n">mark</span><span class="p">(</span><span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">v</span><span class="p">);</span>
+        <span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">lazy</span><span class="o">=</span><span class="nb">false</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="kt">int</span> <span class="n">mid</span><span class="o">=</span><span class="p">(</span><span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">l</span><span class="o">+</span><span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">r</span><span class="p">)</span><span class="o">&gt;&gt;</span><span class="mi">1</span><span class="p">;</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">r</span><span class="o">&lt;=</span><span class="n">mid</span><span class="p">)</span>
+        <span class="n">update</span><span class="p">(</span><span class="n">l</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">id</span><span class="o">&lt;&lt;</span><span class="mi">1</span><span class="p">,</span><span class="n">average</span><span class="p">);</span>
+    <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">l</span><span class="o">&gt;</span><span class="n">mid</span><span class="p">)</span>
+        <span class="n">update</span><span class="p">(</span><span class="n">l</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">id</span><span class="o">&lt;&lt;</span><span class="mi">1</span><span class="o">|</span><span class="mi">1</span><span class="p">,</span><span class="n">average</span><span class="p">);</span>
+    <span class="k">else</span><span class="p">{</span>
+        <span class="n">update</span><span class="p">(</span><span class="n">l</span><span class="p">,</span><span class="n">mid</span><span class="p">,</span><span class="n">id</span><span class="o">&lt;&lt;</span><span class="mi">1</span><span class="p">,</span><span class="n">average</span><span class="p">);</span>
+        <span class="n">update</span><span class="p">(</span><span class="n">mid</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">id</span><span class="o">&lt;&lt;</span><span class="mi">1</span><span class="o">|</span><span class="mi">1</span><span class="p">,</span><span class="n">average</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">sum</span><span class="o">=</span><span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="o">&lt;&lt;</span><span class="mi">1</span><span class="p">].</span><span class="n">sum</span><span class="o">+</span><span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="o">&lt;&lt;</span><span class="mi">1</span><span class="o">|</span><span class="mi">1</span><span class="p">].</span><span class="n">sum</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">ll</span> <span class="nf">Search</span><span class="p">(</span><span class="kt">int</span> <span class="n">l</span><span class="p">,</span><span class="kt">int</span> <span class="n">r</span><span class="p">,</span><span class="kt">int</span> <span class="n">id</span><span class="p">){</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">l</span><span class="o">&gt;=</span><span class="n">l</span> <span class="o">&amp;&amp;</span> <span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">r</span><span class="o">&lt;=</span><span class="n">r</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">sum</span><span class="p">;</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">lazy</span><span class="p">){</span>
+
+        <span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="o">&lt;&lt;</span><span class="mi">1</span><span class="p">].</span><span class="n">mark</span><span class="p">(</span><span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">v</span><span class="p">);</span>
+        <span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="o">&lt;&lt;</span><span class="mi">1</span><span class="o">|</span><span class="mi">1</span><span class="p">].</span><span class="n">mark</span><span class="p">(</span><span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">v</span><span class="p">);</span>
+
+        <span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">lazy</span><span class="o">=</span><span class="nb">false</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="kt">int</span> <span class="n">mid</span><span class="o">=</span><span class="p">(</span><span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">l</span><span class="o">+</span><span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">r</span><span class="p">)</span><span class="o">&gt;&gt;</span><span class="mi">1</span><span class="p">;</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">r</span><span class="o">&lt;=</span><span class="n">mid</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Search</span><span class="p">(</span><span class="n">l</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">id</span><span class="o">&lt;&lt;</span><span class="mi">1</span><span class="p">);</span>
+    <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">l</span><span class="o">&gt;</span><span class="n">mid</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Search</span><span class="p">(</span><span class="n">l</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">id</span><span class="o">&lt;&lt;</span><span class="mi">1</span><span class="o">|</span><span class="mi">1</span><span class="p">);</span>
+    <span class="k">else</span>
+        <span class="k">return</span> <span class="n">Search</span><span class="p">(</span><span class="n">l</span><span class="p">,</span><span class="n">mid</span><span class="p">,</span><span class="n">id</span><span class="o">&lt;&lt;</span><span class="mi">1</span><span class="p">)</span><span class="o">+</span><span class="n">Search</span><span class="p">(</span><span class="n">mid</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">id</span><span class="o">&lt;&lt;</span><span class="mi">1</span><span class="o">|</span><span class="mi">1</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">query</span><span class="p">(</span><span class="kt">int</span> <span class="n">id</span><span class="p">){</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">l</span><span class="o">==</span><span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">r</span><span class="p">){</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">l</span><span class="o">!=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">putchar</span><span class="p">(</span><span class="sc">&#39; &#39;</span><span class="p">);</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%lld&quot;</span><span class="p">,</span><span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">sum</span><span class="p">);</span>
+        <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">lazy</span><span class="p">){</span>
+
+        <span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="o">&lt;&lt;</span><span class="mi">1</span><span class="p">].</span><span class="n">mark</span><span class="p">(</span><span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">v</span><span class="p">);</span>
+        <span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="o">&lt;&lt;</span><span class="mi">1</span><span class="o">|</span><span class="mi">1</span><span class="p">].</span><span class="n">mark</span><span class="p">(</span><span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">v</span><span class="p">);</span>
+
+        <span class="n">seg</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">lazy</span><span class="o">=</span><span class="nb">false</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">query</span><span class="p">(</span><span class="n">id</span><span class="o">&lt;&lt;</span><span class="mi">1</span><span class="p">);</span>
+    <span class="n">query</span><span class="p">(</span><span class="n">id</span><span class="o">&lt;&lt;</span><span class="mi">1</span><span class="o">|</span><span class="mi">1</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="n">ll</span> <span class="nf">myceil</span><span class="p">(</span><span class="n">ll</span> <span class="n">sum</span><span class="p">,</span><span class="kt">int</span> <span class="n">n</span><span class="p">){</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">sum</span><span class="o">&gt;=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">sum</span><span class="o">/</span><span class="n">n</span><span class="o">+</span><span class="p">(</span><span class="n">sum</span><span class="o">%</span><span class="n">n</span><span class="o">!=</span><span class="mi">0</span><span class="p">);</span>
+    <span class="k">else</span>
+        <span class="k">return</span> <span class="n">sum</span><span class="o">/</span><span class="n">n</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">ll</span> <span class="nf">myfloor</span><span class="p">(</span><span class="n">ll</span> <span class="n">sum</span><span class="p">,</span><span class="kt">int</span> <span class="n">n</span><span class="p">){</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">sum</span><span class="o">&gt;=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">sum</span><span class="o">/</span><span class="n">n</span><span class="p">;</span>
+    <span class="k">else</span>
+        <span class="k">return</span> <span class="n">sum</span><span class="o">/</span><span class="n">n</span><span class="o">-</span><span class="p">(</span><span class="n">sum</span><span class="o">%</span><span class="n">n</span><span class="o">!=</span><span class="mi">0</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="cp">#ifndef ONLINE_JUDGE</span>
+    <span class="n">freopen</span><span class="p">(</span><span class="s">&quot;in.txt&quot;</span><span class="p">,</span><span class="s">&quot;r&quot;</span><span class="p">,</span><span class="n">stdin</span><span class="p">);</span>
+    <span class="n">freopen</span><span class="p">(</span><span class="s">&quot;out.txt&quot;</span><span class="p">,</span><span class="s">&quot;w&quot;</span><span class="p">,</span><span class="n">stdout</span><span class="p">);</span>
+<span class="cp">#endif</span>
+
+    <span class="k">while</span><span class="p">(</span><span class="n">scanf</span><span class="p">(</span><span class="s">&quot;%d%d&quot;</span><span class="p">,</span><span class="o">&amp;</span><span class="n">n</span><span class="p">,</span><span class="o">&amp;</span><span class="n">m</span><span class="p">)</span><span class="o">!=</span><span class="n">EOF</span><span class="p">){</span>
+        <span class="n">oldSum</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+        <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;=</span><span class="n">n</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">){</span>
+            <span class="n">scanf</span><span class="p">(</span><span class="s">&quot;%lld&quot;</span><span class="p">,</span><span class="o">&amp;</span><span class="n">val</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+            <span class="n">oldSum</span><span class="o">+=</span><span class="n">val</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+        <span class="p">}</span>
+        <span class="n">build</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="mi">1</span><span class="p">);</span>
+
+        <span class="kt">int</span> <span class="n">l</span><span class="p">,</span><span class="n">r</span><span class="p">;</span>
+        <span class="n">ll</span> <span class="n">average</span><span class="p">;</span>
+
+        <span class="k">while</span><span class="p">(</span><span class="n">m</span><span class="o">--</span><span class="p">){</span>
+            <span class="n">scanf</span><span class="p">(</span><span class="s">&quot;%d%d&quot;</span><span class="p">,</span><span class="o">&amp;</span><span class="n">l</span><span class="p">,</span><span class="o">&amp;</span><span class="n">r</span><span class="p">);</span>
+            <span class="n">curSum</span><span class="o">=</span><span class="n">Search</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="mi">1</span><span class="p">);</span>
+            <span class="n">segSum</span><span class="o">=</span><span class="n">Search</span><span class="p">(</span><span class="n">l</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="mi">1</span><span class="p">);</span>
+            <span class="k">if</span><span class="p">(</span><span class="n">curSum</span><span class="o">&lt;=</span><span class="n">oldSum</span><span class="p">)</span>
+                <span class="n">average</span><span class="o">=</span><span class="n">myceil</span><span class="p">(</span><span class="n">segSum</span><span class="p">,</span><span class="n">r</span><span class="o">-</span><span class="n">l</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span>
+            <span class="k">else</span>
+                <span class="n">average</span><span class="o">=</span><span class="n">myfloor</span><span class="p">(</span><span class="n">segSum</span><span class="p">,</span><span class="n">r</span><span class="o">-</span><span class="n">l</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span>
+            <span class="n">update</span><span class="p">(</span><span class="n">l</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">average</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="n">query</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+        <span class="n">puts</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="p">);</span><span class="n">puts</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+  </div>
+  <div id="article_meta">
+  	<p>Author: <a href="http://localhost:8000/author/altynai.html">Altynai</a></p>
+    <p>Category: <a href="http://localhost:8000/category/code.html">Code</a></p>
+    <p>Tags:
+      <a href="http://localhost:8000/tag/acm.html">ACM</a>    </p>
+  </div>
+    <div class="comments">
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_identifier = "2011/11/zoj-2706-thermal-death-of-the-universe/";
+        var disqus_url = "http://localhost:8000/2011/11/zoj-2706-thermal-death-of-the-universe/";
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://Sideways.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+    </div>
+</article>
+
+    <footer>
+	
+<p><a href="http://localhost:8000/" class="button_accent">&larr; Back to Index</a></p>
+    </footer>
+
+    <div id="ending_message">
+      <p>&copy Geoffrey Gimse. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme adapted from pelican-svbhack available on <a href="https://github.com/giulivo/pelican-svbhack" target="_blank">github</a>. Many of the images used on this site are in the Public Domain and available from <a href="http://openclipart.org" target="_blank">Openclipart</a>.</p>
+    </div>
+  </main>
+</body>
+</html>

@@ -1,270 +1,265 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-        <meta charset="utf-8" />
-        <title>Sideways</title>
-        <link rel="stylesheet" href="/theme/css/main.css" />
 
-        <!--[if IE]>
-            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-        <![endif]-->
+<head>
+  <!-- <link rel="stylesheet/less" type="text/css" href="http://localhost:8000/theme/css/style.less">
+  <script src="http://localhost:8000/theme/js/less-1.3.3.min.js" type="text/javascript"></script> test -->
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/theme/css/style.css"> 
+
+  <link rel="stylesheet" type="text/css" href="http://localhost:8000/theme/css/pygments.css">
+  <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=PT+Sans|PT+Serif|PT+Mono">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width; initial-scale=1.0">
+  <meta name="author" content="Altynai">
+  <meta name="description" content="Posts and writings by Altynai">
+  <link rel="shortcut icon" href="http://localhost:8000/theme/images/favicon.ico" type="image/x-icon" />
+
+
+  <title>
+Sideways  </title>
+
 </head>
 
-<body id="index" class="home">
-        <header id="banner" class="body">
-                <h1><a href="/">Sideways </a></h1>
-                <nav><ul>
-                    <li><a href="/category/shu-ju-jie-gou.html">数据结构</a></li>
-                </ul></nav>
-        </header><!-- /#banner -->
+<body>
+  <aside>
+    <div id="user_meta">
+        <a href="http://localhost:8000">
+        <img src="http://localhost:8000/theme/images/logo.jpg" alt="logo">
+      </a>
+      <h2><a href="http://localhost:8000">Sideways</a></h2>
+      <p class="tagline">Reflections on life, code, movie, and the craft of writing..</p>
+      <div id="social_links">
+	<ul id="social_list">
+        <li><a href="https://github.com/Altynai" rel='me' target="_blank"><i class="icon-github icon-2x"></i></a></li>
+        <li><a href="http://weibo.com/u/2164187874" rel='me' target="_blank"><i class="icon-weibo icon-2x"></i></a></li>
+	</ul>
+      </div>
+      <ul>
+        <li><a  href="http://localhost:8000/pages/about-me.html">关于我</a></li>
+        <li><a  href="http://localhost:8000/archives.html">Archives</a></li>
+       </ul>
+    </div>
+    <div class="overlay">
+    </div>
+  </aside>
 
-            <aside id="featured" class="body">
-                <article>
-                    <h1 class="entry-title"><a href="/04-18.html">04-18</a></h1>
-<footer class="post-info">
-        <abbr class="published" title="2013-04-18T00:00:00">
-                Thu 18 April 2013
-        </abbr>
+  <main>
+     <header>
+		<p><a href="http://localhost:8000">Sideways</a>
+          </p>
+    </header>
+<article>
+  <div id="article_title">
+    <h1><a href="http://localhost:8000/2014/01/nginx_limit/">Nginx限制模块的共享内存</a></h1>
+  </div>
+  <div id="article_text">
+    <h3>起因</h3>
+<p>对于Nginx中的<code>limit_conn_zone</code>和<code>limit_req_zone</code>两个模块，搜了一遍，发现网上都是讲这两个模块的意思和基本用法，却好像都没怎么细讲到一个问题：两个模块都配置了一个<code>内存最大值</code>来维护<code>$variable</code>（一般为<code>$binary_remote_addr</code>）所对应的请求数和请求速率，却没细说怎么维护，内存用完了怎么处理等问题。</p>
+<h3>重提</h3>
+<p>先再提提这两个模块的用法，换起一点回忆。</p>
+<p>首先是<code>limit_conn_zone</code></p>
+<div class="highlight"><pre><span class="n">http</span> <span class="p">{</span>  
+    <span class="n">limit_conn_zone</span> <span class="err">$</span><span class="n">binary_remote_addr</span> <span class="n">zone</span><span class="o">=</span><span class="n">addr</span><span class="p">:</span><span class="mi">10</span><span class="n">m</span><span class="p">;</span>  
+    <span class="n">server</span> <span class="p">{</span>  
+        <span class="n">location</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span> <span class="p">{</span>  
+            <span class="n">limit_conn</span> <span class="n">addr</span> <span class="mi">5</span><span class="p">;</span>  
+        <span class="p">}</span>
+    <span class="p">}</span> 
+<span class="p">}</span>
+</pre></div>
 
-        <address class="vcard author">
-                By <a class="url fn" href="/author/altynai.html">altynai</a>
-        </address>
-<p>In <a href="/category/shu-ju-jie-gou.html">数据结构</a>. </p>
 
-</footer><!-- /.post-info --><h1>Splay Tree</h1>
-<h2>概述</h2>
-<ol>
-<li>节点不记录附加属性</li>
-<li>包含特殊操作<code>splaying</code>：将节点通过<code>左旋 - 右旋</code>的组合调整到根部</li>
-<li>所有操作基于<code>splaying</code></li>
-<li>能使之前访问过的节点下一次能更快速访问</li>
-</ol>
-<h2>操作</h2>
-<ul>
-<li>插入</li>
-<li>传统的<code>BST</code>插入</li>
-<li>
-<p>将新插入的节点旋转到根部</p>
-</li>
-<li>
-<p>删除</p>
-</li>
-<li>和传统<code>BST</code>操作一致：将删除的结点与其左子树中最大的点（或者右子树中最小的点交换）</li>
-<li>将被删除结点的父节点<code>splay</code>到根部</li>
-</ul>
-<h2>C++实现</h2>
-<div class="highlight"><pre><span class="cp">#include &lt;functional&gt;</span>
-
-<span class="cp">#ifndef SPLAY_TREE</span>
-<span class="cp">#define SPLAY_TREE</span>
-
-<span class="k">template</span><span class="o">&lt;</span> <span class="k">typename</span> <span class="n">T</span><span class="p">,</span> <span class="k">typename</span> <span class="n">Comp</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">less</span><span class="o">&lt;</span> <span class="n">T</span> <span class="o">&gt;</span> <span class="o">&gt;</span>
-<span class="k">class</span> <span class="nc">splay_tree</span> <span class="p">{</span>
-<span class="nl">private:</span>
-  <span class="n">Comp</span> <span class="n">comp</span><span class="p">;</span>
-  <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">p_size</span><span class="p">;</span>
-
-  <span class="k">struct</span> <span class="n">node</span> <span class="p">{</span>
-    <span class="n">node</span> <span class="o">*</span><span class="n">left</span><span class="p">,</span> <span class="o">*</span><span class="n">right</span><span class="p">;</span>
-    <span class="c1">// 附加记录父节点</span>
-    <span class="n">node</span> <span class="o">*</span><span class="n">parent</span><span class="p">;</span>
-    <span class="n">T</span> <span class="n">key</span><span class="p">;</span>
-    <span class="n">node</span><span class="p">(</span> <span class="k">const</span> <span class="n">T</span><span class="o">&amp;</span> <span class="n">init</span> <span class="o">=</span> <span class="n">T</span><span class="p">(</span> <span class="p">)</span> <span class="p">)</span> <span class="o">:</span> <span class="n">left</span><span class="p">(</span> <span class="mi">0</span> <span class="p">),</span> <span class="n">right</span><span class="p">(</span> <span class="mi">0</span> <span class="p">),</span> <span class="n">parent</span><span class="p">(</span> <span class="mi">0</span> <span class="p">),</span> <span class="n">key</span><span class="p">(</span> <span class="n">init</span> <span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
-  <span class="p">}</span> <span class="o">*</span><span class="n">root</span><span class="p">;</span>
-
-  <span class="kt">void</span> <span class="nf">left_rotate</span><span class="p">(</span> <span class="n">node</span> <span class="o">*</span><span class="n">x</span> <span class="p">)</span> <span class="p">{</span>
-    <span class="cm">/* 左旋某个节点, 如下如图所示：</span>
-
-<span class="cm">      X             Y</span>
-<span class="cm">     / \           / \</span>
-<span class="cm">    A   Y    =&gt;   X   C</span>
-<span class="cm">       / \       / \</span>
-<span class="cm">      B   C     A   B</span>
-
-<span class="cm">    */</span>
-    <span class="n">node</span> <span class="o">*</span><span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">right</span><span class="p">;</span>
-    <span class="n">x</span><span class="o">-&gt;</span><span class="n">right</span> <span class="o">=</span> <span class="n">y</span><span class="o">-&gt;</span><span class="n">left</span><span class="p">;</span>
-    <span class="k">if</span><span class="p">(</span> <span class="n">y</span><span class="o">-&gt;</span><span class="n">left</span> <span class="p">)</span> <span class="n">y</span><span class="o">-&gt;</span><span class="n">left</span><span class="o">-&gt;</span><span class="n">parent</span> <span class="o">=</span> <span class="n">x</span><span class="p">;</span>
-    <span class="n">y</span><span class="o">-&gt;</span><span class="n">parent</span> <span class="o">=</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span><span class="p">;</span>
-    <span class="k">if</span><span class="p">(</span> <span class="o">!</span><span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span> <span class="p">)</span> <span class="n">root</span> <span class="o">=</span> <span class="n">y</span><span class="p">;</span>
-    <span class="k">else</span> <span class="k">if</span><span class="p">(</span> <span class="n">x</span> <span class="o">==</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span><span class="o">-&gt;</span><span class="n">left</span> <span class="p">)</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span><span class="o">-&gt;</span><span class="n">left</span> <span class="o">=</span> <span class="n">y</span><span class="p">;</span>
-    <span class="k">else</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span><span class="o">-&gt;</span><span class="n">right</span> <span class="o">=</span> <span class="n">y</span><span class="p">;</span>
-    <span class="n">y</span><span class="o">-&gt;</span><span class="n">left</span> <span class="o">=</span> <span class="n">x</span><span class="p">;</span>
-    <span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span> <span class="o">=</span> <span class="n">y</span><span class="p">;</span>
-  <span class="p">}</span>
-
-  <span class="kt">void</span> <span class="nf">right_rotate</span><span class="p">(</span> <span class="n">node</span> <span class="o">*</span><span class="n">x</span> <span class="p">)</span> <span class="p">{</span>
-    <span class="cm">/* 右旋某个节点, 如下如图所示：</span>
-
-<span class="cm">        X             Y</span>
-<span class="cm">       / \           / \</span>
-<span class="cm">      Y   C   =&gt;    A   X</span>
-<span class="cm">     / \               / \</span>
-<span class="cm">    A   B             B   C</span>
-
-<span class="cm">    */</span>
-    <span class="n">node</span> <span class="o">*</span><span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">left</span><span class="p">;</span>
-    <span class="n">x</span><span class="o">-&gt;</span><span class="n">left</span> <span class="o">=</span> <span class="n">y</span><span class="o">-&gt;</span><span class="n">right</span><span class="p">;</span>
-    <span class="k">if</span><span class="p">(</span> <span class="n">y</span><span class="o">-&gt;</span><span class="n">right</span> <span class="p">)</span> <span class="n">y</span><span class="o">-&gt;</span><span class="n">right</span><span class="o">-&gt;</span><span class="n">parent</span> <span class="o">=</span> <span class="n">x</span><span class="p">;</span>
-    <span class="n">y</span><span class="o">-&gt;</span><span class="n">parent</span> <span class="o">=</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span><span class="p">;</span>
-    <span class="k">if</span><span class="p">(</span> <span class="o">!</span><span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span> <span class="p">)</span> <span class="n">root</span> <span class="o">=</span> <span class="n">y</span><span class="p">;</span>
-    <span class="k">else</span> <span class="k">if</span><span class="p">(</span> <span class="n">x</span> <span class="o">==</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span><span class="o">-&gt;</span><span class="n">left</span> <span class="p">)</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span><span class="o">-&gt;</span><span class="n">left</span> <span class="o">=</span> <span class="n">y</span><span class="p">;</span>
-    <span class="k">else</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span><span class="o">-&gt;</span><span class="n">right</span> <span class="o">=</span> <span class="n">y</span><span class="p">;</span>
-    <span class="n">y</span><span class="o">-&gt;</span><span class="n">right</span> <span class="o">=</span> <span class="n">x</span><span class="p">;</span>
-    <span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span> <span class="o">=</span> <span class="n">y</span><span class="p">;</span>
-  <span class="p">}</span>
-
-  <span class="kt">void</span> <span class="nf">splay</span><span class="p">(</span> <span class="n">node</span> <span class="o">*</span><span class="n">x</span> <span class="p">)</span> <span class="p">{</span>
-    <span class="k">while</span><span class="p">(</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span> <span class="p">)</span> <span class="p">{</span>
-      <span class="c1">// x为第二层结点, 再旋转一次就到根部</span>
-      <span class="k">if</span><span class="p">(</span> <span class="o">!</span><span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span><span class="o">-&gt;</span><span class="n">parent</span> <span class="p">)</span> <span class="p">{</span>
-        <span class="k">if</span><span class="p">(</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span><span class="o">-&gt;</span><span class="n">left</span> <span class="o">==</span> <span class="n">x</span> <span class="p">)</span> <span class="n">right_rotate</span><span class="p">(</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span> <span class="p">);</span>
-        <span class="k">else</span> <span class="n">left_rotate</span><span class="p">(</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span> <span class="p">);</span>
-
-      <span class="c1">// x和x-&gt;parent都是其父节点的左节点, 对这两个结点分别右旋</span>
-      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span><span class="p">(</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span><span class="o">-&gt;</span><span class="n">left</span> <span class="o">==</span> <span class="n">x</span> <span class="o">&amp;&amp;</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span><span class="o">-&gt;</span><span class="n">parent</span><span class="o">-&gt;</span><span class="n">left</span> <span class="o">==</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span> <span class="p">)</span> <span class="p">{</span>
-        <span class="n">right_rotate</span><span class="p">(</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span><span class="o">-&gt;</span><span class="n">parent</span> <span class="p">);</span>
-        <span class="n">right_rotate</span><span class="p">(</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span> <span class="p">);</span>
-
-      <span class="c1">// x和x-&gt;parent都是其父节点的右节点, 对这两个结点分别左旋</span>
-      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span><span class="p">(</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span><span class="o">-&gt;</span><span class="n">right</span> <span class="o">==</span> <span class="n">x</span> <span class="o">&amp;&amp;</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span><span class="o">-&gt;</span><span class="n">parent</span><span class="o">-&gt;</span><span class="n">right</span> <span class="o">==</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span> <span class="p">)</span> <span class="p">{</span>
-        <span class="n">left_rotate</span><span class="p">(</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span><span class="o">-&gt;</span><span class="n">parent</span> <span class="p">);</span>
-        <span class="n">left_rotate</span><span class="p">(</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span> <span class="p">);</span>
-
-      <span class="c1">// x是其父节点的左节点, x-&gt;parent是其父节点的右节点</span>
-      <span class="c1">// 对x-&gt;parent先右旋, 再左旋</span>
-      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span><span class="p">(</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span><span class="o">-&gt;</span><span class="n">left</span> <span class="o">==</span> <span class="n">x</span> <span class="o">&amp;&amp;</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span><span class="o">-&gt;</span><span class="n">parent</span><span class="o">-&gt;</span><span class="n">right</span> <span class="o">==</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span> <span class="p">)</span> <span class="p">{</span>
-        <span class="n">right_rotate</span><span class="p">(</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span> <span class="p">);</span>
-        <span class="n">left_rotate</span><span class="p">(</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span> <span class="p">);</span>
-
-      <span class="c1">// x是其父节点的右节点, x-&gt;parent是其父节点的左节点</span>
-      <span class="c1">// 对x-&gt;parent先左旋, 再右旋</span>
-      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-        <span class="n">left_rotate</span><span class="p">(</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span> <span class="p">);</span>
-        <span class="n">right_rotate</span><span class="p">(</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">parent</span> <span class="p">);</span>
-      <span class="p">}</span>
-    <span class="p">}</span>
-  <span class="p">}</span>
-
-  <span class="kt">void</span> <span class="nf">replace</span><span class="p">(</span> <span class="n">node</span> <span class="o">*</span><span class="n">u</span><span class="p">,</span> <span class="n">node</span> <span class="o">*</span><span class="n">v</span> <span class="p">)</span> <span class="p">{</span>
-    <span class="c1">// 将u所在的子树替换成v</span>
-    <span class="k">if</span><span class="p">(</span> <span class="o">!</span><span class="n">u</span><span class="o">-&gt;</span><span class="n">parent</span> <span class="p">)</span> <span class="n">root</span> <span class="o">=</span> <span class="n">v</span><span class="p">;</span>
-    <span class="k">else</span> <span class="k">if</span><span class="p">(</span> <span class="n">u</span> <span class="o">==</span> <span class="n">u</span><span class="o">-&gt;</span><span class="n">parent</span><span class="o">-&gt;</span><span class="n">left</span> <span class="p">)</span> <span class="n">u</span><span class="o">-&gt;</span><span class="n">parent</span><span class="o">-&gt;</span><span class="n">left</span> <span class="o">=</span> <span class="n">v</span><span class="p">;</span>
-    <span class="k">else</span> <span class="n">u</span><span class="o">-&gt;</span><span class="n">parent</span><span class="o">-&gt;</span><span class="n">right</span> <span class="o">=</span> <span class="n">v</span><span class="p">;</span>
-    <span class="k">if</span><span class="p">(</span> <span class="n">v</span> <span class="p">)</span> <span class="n">v</span><span class="o">-&gt;</span><span class="n">parent</span> <span class="o">=</span> <span class="n">u</span><span class="o">-&gt;</span><span class="n">parent</span><span class="p">;</span>
-  <span class="p">}</span>
-
-  <span class="n">node</span><span class="o">*</span> <span class="nf">subtree_minimum</span><span class="p">(</span> <span class="n">node</span> <span class="o">*</span><span class="n">u</span> <span class="p">)</span> <span class="p">{</span>
-    <span class="c1">// 查找u子树中key最小的结点</span>
-    <span class="k">while</span><span class="p">(</span> <span class="n">u</span><span class="o">-&gt;</span><span class="n">left</span> <span class="p">)</span> <span class="n">u</span> <span class="o">=</span> <span class="n">u</span><span class="o">-&gt;</span><span class="n">left</span><span class="p">;</span>
-    <span class="k">return</span> <span class="n">u</span><span class="p">;</span>
-  <span class="p">}</span>
-
-  <span class="n">node</span><span class="o">*</span> <span class="nf">subtree_maximum</span><span class="p">(</span> <span class="n">node</span> <span class="o">*</span><span class="n">u</span> <span class="p">)</span> <span class="p">{</span>
-    <span class="c1">// 查找u子树中key最大的结点</span>
-    <span class="k">while</span><span class="p">(</span> <span class="n">u</span><span class="o">-&gt;</span><span class="n">right</span> <span class="p">)</span> <span class="n">u</span> <span class="o">=</span> <span class="n">u</span><span class="o">-&gt;</span><span class="n">right</span><span class="p">;</span>
-    <span class="k">return</span> <span class="n">u</span><span class="p">;</span>
-  <span class="p">}</span>
-<span class="nl">public:</span>
-  <span class="n">splay_tree</span><span class="p">(</span> <span class="p">)</span> <span class="o">:</span> <span class="n">root</span><span class="p">(</span> <span class="mi">0</span> <span class="p">),</span> <span class="n">p_size</span><span class="p">(</span> <span class="mi">0</span> <span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
-
-  <span class="kt">void</span> <span class="n">insert</span><span class="p">(</span> <span class="k">const</span> <span class="n">T</span> <span class="o">&amp;</span><span class="n">key</span> <span class="p">)</span> <span class="p">{</span>
-    <span class="n">node</span> <span class="o">*</span><span class="n">z</span> <span class="o">=</span> <span class="n">root</span><span class="p">;</span>
-    <span class="n">node</span> <span class="o">*</span><span class="n">p</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-
-    <span class="k">while</span><span class="p">(</span> <span class="n">z</span> <span class="p">)</span> <span class="p">{</span>
-      <span class="n">p</span> <span class="o">=</span> <span class="n">z</span><span class="p">;</span>
-      <span class="k">if</span><span class="p">(</span> <span class="n">comp</span><span class="p">(</span> <span class="n">z</span><span class="o">-&gt;</span><span class="n">key</span><span class="p">,</span> <span class="n">key</span> <span class="p">)</span> <span class="p">)</span> <span class="n">z</span> <span class="o">=</span> <span class="n">z</span><span class="o">-&gt;</span><span class="n">right</span><span class="p">;</span>
-      <span class="k">else</span> <span class="n">z</span> <span class="o">=</span> <span class="n">z</span><span class="o">-&gt;</span><span class="n">left</span><span class="p">;</span>
-    <span class="p">}</span>
-
-    <span class="n">z</span> <span class="o">=</span> <span class="k">new</span> <span class="n">node</span><span class="p">(</span> <span class="n">key</span> <span class="p">);</span>
-    <span class="n">z</span><span class="o">-&gt;</span><span class="n">parent</span> <span class="o">=</span> <span class="n">p</span><span class="p">;</span>
-
-    <span class="k">if</span><span class="p">(</span> <span class="o">!</span><span class="n">p</span> <span class="p">)</span> <span class="n">root</span> <span class="o">=</span> <span class="n">z</span><span class="p">;</span>
-    <span class="k">else</span> <span class="k">if</span><span class="p">(</span> <span class="n">comp</span><span class="p">(</span> <span class="n">p</span><span class="o">-&gt;</span><span class="n">key</span><span class="p">,</span> <span class="n">z</span><span class="o">-&gt;</span><span class="n">key</span> <span class="p">)</span> <span class="p">)</span> <span class="n">p</span><span class="o">-&gt;</span><span class="n">right</span> <span class="o">=</span> <span class="n">z</span><span class="p">;</span>
-    <span class="k">else</span> <span class="n">p</span><span class="o">-&gt;</span><span class="n">left</span> <span class="o">=</span> <span class="n">z</span><span class="p">;</span>
-
-    <span class="n">splay</span><span class="p">(</span> <span class="n">z</span> <span class="p">);</span>
-    <span class="n">p_size</span><span class="o">++</span><span class="p">;</span>
-  <span class="p">}</span>
-
-  <span class="n">node</span><span class="o">*</span> <span class="n">find</span><span class="p">(</span> <span class="k">const</span> <span class="n">T</span> <span class="o">&amp;</span><span class="n">key</span> <span class="p">)</span> <span class="p">{</span>
-    <span class="n">node</span> <span class="o">*</span><span class="n">z</span> <span class="o">=</span> <span class="n">root</span><span class="p">;</span>
-    <span class="k">while</span><span class="p">(</span> <span class="n">z</span> <span class="p">)</span> <span class="p">{</span>
-      <span class="k">if</span><span class="p">(</span> <span class="n">comp</span><span class="p">(</span> <span class="n">z</span><span class="o">-&gt;</span><span class="n">key</span><span class="p">,</span> <span class="n">key</span> <span class="p">)</span> <span class="p">)</span> <span class="n">z</span> <span class="o">=</span> <span class="n">z</span><span class="o">-&gt;</span><span class="n">right</span><span class="p">;</span>
-      <span class="k">else</span> <span class="k">if</span><span class="p">(</span> <span class="n">comp</span><span class="p">(</span> <span class="n">key</span><span class="p">,</span> <span class="n">z</span><span class="o">-&gt;</span><span class="n">key</span> <span class="p">)</span> <span class="p">)</span> <span class="n">z</span> <span class="o">=</span> <span class="n">z</span><span class="o">-&gt;</span><span class="n">left</span><span class="p">;</span>
-      <span class="k">else</span> <span class="k">return</span> <span class="n">z</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="p">}</span>
-
-  <span class="kt">void</span> <span class="n">erase</span><span class="p">(</span> <span class="k">const</span> <span class="n">T</span> <span class="o">&amp;</span><span class="n">key</span> <span class="p">)</span> <span class="p">{</span>
-    <span class="n">node</span> <span class="o">*</span><span class="n">z</span> <span class="o">=</span> <span class="n">find</span><span class="p">(</span> <span class="n">key</span> <span class="p">);</span>
-    <span class="k">if</span><span class="p">(</span> <span class="o">!</span><span class="n">z</span> <span class="p">)</span> <span class="k">return</span><span class="p">;</span>
-
-    <span class="n">splay</span><span class="p">(</span> <span class="n">z</span> <span class="p">);</span>
-
-    <span class="k">if</span><span class="p">(</span> <span class="o">!</span><span class="n">z</span><span class="o">-&gt;</span><span class="n">left</span> <span class="p">)</span> <span class="n">replace</span><span class="p">(</span> <span class="n">z</span><span class="p">,</span> <span class="n">z</span><span class="o">-&gt;</span><span class="n">right</span> <span class="p">);</span>
-    <span class="k">else</span> <span class="nf">if</span><span class="p">(</span> <span class="o">!</span><span class="n">z</span><span class="o">-&gt;</span><span class="n">right</span> <span class="p">)</span> <span class="n">replace</span><span class="p">(</span> <span class="n">z</span><span class="p">,</span> <span class="n">z</span><span class="o">-&gt;</span><span class="n">left</span> <span class="p">);</span>
-    <span class="k">else</span> <span class="p">{</span>
-      <span class="n">node</span> <span class="o">*</span><span class="n">y</span> <span class="o">=</span> <span class="n">subtree_minimum</span><span class="p">(</span> <span class="n">z</span><span class="o">-&gt;</span><span class="n">right</span> <span class="p">);</span>
-      <span class="k">if</span><span class="p">(</span> <span class="n">y</span><span class="o">-&gt;</span><span class="n">parent</span> <span class="o">!=</span> <span class="n">z</span> <span class="p">)</span> <span class="p">{</span>
-        <span class="n">replace</span><span class="p">(</span> <span class="n">y</span><span class="p">,</span> <span class="n">y</span><span class="o">-&gt;</span><span class="n">right</span> <span class="p">);</span>
-        <span class="n">y</span><span class="o">-&gt;</span><span class="n">right</span> <span class="o">=</span> <span class="n">z</span><span class="o">-&gt;</span><span class="n">right</span><span class="p">;</span>
-        <span class="n">y</span><span class="o">-&gt;</span><span class="n">right</span><span class="o">-&gt;</span><span class="n">parent</span> <span class="o">=</span> <span class="n">y</span><span class="p">;</span>
-      <span class="p">}</span>
-      <span class="n">replace</span><span class="p">(</span> <span class="n">z</span><span class="p">,</span> <span class="n">y</span> <span class="p">);</span>
-      <span class="n">y</span><span class="o">-&gt;</span><span class="n">left</span> <span class="o">=</span> <span class="n">z</span><span class="o">-&gt;</span><span class="n">left</span><span class="p">;</span>
-      <span class="n">y</span><span class="o">-&gt;</span><span class="n">left</span><span class="o">-&gt;</span><span class="n">parent</span> <span class="o">=</span> <span class="n">y</span><span class="p">;</span>
-    <span class="p">}</span>
-
-    <span class="k">delete</span> <span class="n">z</span><span class="p">;</span>
-    <span class="n">p_size</span><span class="o">--</span><span class="p">;</span>
-  <span class="p">}</span>
-
-  <span class="k">const</span> <span class="n">T</span><span class="o">&amp;</span> <span class="n">minimum</span><span class="p">(</span> <span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">subtree_minimum</span><span class="p">(</span> <span class="n">root</span> <span class="p">)</span><span class="o">-&gt;</span><span class="n">key</span><span class="p">;</span> <span class="p">}</span>
-  <span class="k">const</span> <span class="n">T</span><span class="o">&amp;</span> <span class="n">maximum</span><span class="p">(</span> <span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">subtree_maximum</span><span class="p">(</span> <span class="n">root</span> <span class="p">)</span><span class="o">-&gt;</span><span class="n">key</span><span class="p">;</span> <span class="p">}</span>
-
-  <span class="kt">bool</span> <span class="n">empty</span><span class="p">(</span> <span class="p">)</span> <span class="k">const</span> <span class="p">{</span> <span class="k">return</span> <span class="n">root</span> <span class="o">==</span> <span class="mi">0</span><span class="p">;</span> <span class="p">}</span>
-  <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">size</span><span class="p">(</span> <span class="p">)</span> <span class="k">const</span> <span class="p">{</span> <span class="k">return</span> <span class="n">p_size</span><span class="p">;</span> <span class="p">}</span>
+<p>在<code>http</code>上下文中配置了最大为10m的内存块，维护<code>请求IP</code>的链接数：最多支持5个来自同一IP的并发连接。</p>
+<p>然后是类似的<code>limit_req_zone</code></p>
+<div class="highlight"><pre><span class="n">http</span> <span class="p">{</span>  
+    <span class="n">limit_req_zone</span> <span class="err">$</span><span class="n">binary_remote_addr</span> <span class="n">zone</span><span class="o">=</span><span class="n">one ...</span></pre></div>
+  </div>
+  <div id="article_more">
+  	<a class="button_more" href="http://localhost:8000/2014/01/nginx_limit/">More <i class=" icon-arrow-right"></i></a>
+  </div>
+</article>
+<hr />
+<article>
+  <div id="article_title">
+    <h1><a href="http://localhost:8000/2013/10/atom-summary/">项目感受</a></h1>
+  </div>
+  <div id="article_text">
+    <p>忙了一个多月，第一个能说是正式的项目算差不多忙完了（后续优化不算的话），感受颇深，做个小总(tu)结(cao)。</p>
+<h3>学到的东西</h3>
+<p><strong>Nginx</strong>  </p>
+<p>之前在学校里的时候，知道并稍微了解过一部分相关的资料，但并没有实际上手搭建或者配置过Nginx。由于不是很熟悉相关配置，需要经常一边查文档、资料，一边修改Nginx的配置，然后再测试。在经历了反反复复的几次“配置测试”后，对基本的location匹配，rewrite等有了进一步的认识，同时也养成了经常查官方文档的好习惯: )。其中，最容易搞错的问题在于location的优先级上，下面是一个比较简单的总结：</p>
+<div class="highlight"><pre><span class="o">~</span>     <span class="c"># 执行一个正则匹配，区分大小写</span>
+<span class="o">~*</span>    <span class="c"># 执行一个正则匹配，不区分大小写</span>
+<span class="o">^~</span>    <span class="c"># 进行普通字符匹配，如果匹配，之后不匹配别的选项</span>
+<span class="o">=</span>     <span class="c"># 进行普通字符精确匹配（优先级最高）</span>
+<span class="err">@</span>     <span class="c"># 定义一个命名的location，使用在内部定向时，例如error_page, try_files</span>
+<span class="mf">1.</span> <span class="err">如果满足某个字符精确匹配，停止搜索。</span>
+<span class="mf">2.</span> <span class="err">对于剩余的匹配字符串，进行最长匹配。如果这个匹配使用</span><span class="o">^~</span><span class="err">前缀，停止搜索。</span>
+<span class="mf">3 ...</span></pre></div>
+  </div>
+  <div id="article_more">
+  	<a class="button_more" href="http://localhost:8000/2013/10/atom-summary/">More <i class=" icon-arrow-right"></i></a>
+  </div>
+</article>
+<hr />
+<article>
+  <div id="article_title">
+    <h1><a href="http://localhost:8000/2013/04/empty-array/">空数组</a></h1>
+  </div>
+  <div id="article_text">
+    <p>这是在看Redis源码的时候遇到的，由于底层字符串是封装了C风格的字符串，在<code>src/sds.h</code>可以看到这个结构的申明：</p>
+<div class="highlight"><pre><span class="k">typedef</span> <span class="kt">char</span> <span class="o">*</span><span class="n">sds</span><span class="p">;</span>
+<span class="k">struct</span> <span class="n">sdshdr</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">len</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">free</span><span class="p">;</span>
+    <span class="kt">char</span> <span class="n">buf</span><span class="p">[];</span>
 <span class="p">};</span>
+</pre></div>
 
-<span class="cp">#endif </span><span class="c1">// SPLAY_TREE</span>
-</pre></div>                </article>
-<p class="paginator">
-    Page 1 / 1
-</p>
-            </aside><!-- /#featured -->
-            </ol><!-- /#posts-list -->
-            </section><!-- /#content -->
-        <section id="extras" class="body">
-                <div class="blogroll">
-                        <h2>blogroll</h2>
-                        <ul>
-                            <li><a href="http://getpelican.com/">Pelican</a></li>
-                            <li><a href="http://python.org/">Python.org</a></li>
-                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
-                            <li><a href="#">You can modify those links in your config file</a></li>
-                        </ul>
-                </div><!-- /.blogroll -->
-                <div class="social">
-                        <h2>social</h2>
-                        <ul>
 
-                            <li><a href="#">You can add links in your config file</a></li>
-                            <li><a href="#">Another social link</a></li>
-                        </ul>
-                </div><!-- /.social -->
-        </section><!-- /#extras -->
+<h3>buf为什么定义成<em>空数组</em>？</h3>
+<p>这个结构体的大小是8，即使你写成<code>char buf[0]</code>，它的大小还是8，但是<code>buf</code>不是0的时候显然<code>sizeof(sdshdr)</code>就变了，此时还要考虑内存对齐的情况。这么定义的好处在于<code>buf</code>这个字符缓冲区不会被定死，可以很好的处理变长的问题。</p>
+<p>如果定义成<code>char* buf</code>的话，结构体的大小会变大，而且在构造函数里需要给<code>buf</code>动态的分配空间，这里管理的不好就会有内存泄露的问题。</p>
+<h3>技巧</h3>
+<p><code>buf</code>这个指针的大小本身不算进结构体，<em>它指向的是紧跟在 ...</em></p>
+  </div>
+  <div id="article_more">
+  	<a class="button_more" href="http://localhost:8000/2013/04/empty-array/">More <i class=" icon-arrow-right"></i></a>
+  </div>
+</article>
+<hr />
+<article>
+  <div id="article_title">
+    <h1><a href="http://localhost:8000/2012/11/online-judge-submitter/">Online Judge Submitter</a></h1>
+  </div>
+  <div id="article_text">
+    <p>做这个的东西就是为了熟练掌握一下Python，书买了很久，看了一大半了，但具体实现的代码很少。给自己订了了目标，主要是为了掌握一些基本点和网络编程的小入门，之前看到过有人做过类似的，所以也尝试的做了一个，虽然不怎么实用。</p>
+<p>原理也很简单：  </p>
+<ul>
+<li>给OJ发Post的login请求，在response中获得Cookie  </li>
+<li>带上之前的cookie提交代码，然后根据runId（没的话直接去搜用户提交记录）来获取Judge结果</li>
+</ul>
+<p>细节还是很多的：用户名密码，题目编号，文件对应的编译器，网页源代码中正则出有用数据，etc.
+这几天加紧补上国内其他主要OJ的相关部分，这里也当做日志记录好了。</p>
+<p>项目地址：<a href="https://github.com/Altynai/OnlineJudgeSubmitter">https://github.com/Altynai/OnlineJudgeSubmitter</a></p>
+<p><strong>【2012.11.08】Add ZOJ (<a href="http://acm.zju.edu.cn">http://acm.zju.edu.cn</a>)</strong></p>
+<p><strong>【2012.11.09】Add POJ (<a href="http://poj.org">http://poj.org</a>), HDU(<a href="http://acm.hdu.edu.cn">http ...</a></strong></p>
+  </div>
+  <div id="article_more">
+  	<a class="button_more" href="http://localhost:8000/2012/11/online-judge-submitter/">More <i class=" icon-arrow-right"></i></a>
+  </div>
+</article>
+<hr />
+<article>
+  <div id="article_title">
+    <h1><a href="http://localhost:8000/2012/10/linkedin-cleo/">对于Cleo@LinkedIn的一些小分析和体会</a></h1>
+  </div>
+  <div id="article_text">
+    <p>Cleo是LinkedIn的一个开源项目，主要应用还是<a href="http://en.wikipedia.org/wiki/Typeahead">Typeahead</a>这块地方。项目的主页链接：<a href="http://sna-projects.com/cleo/">http://sna-projects.com/cleo/</a></p>
+<p>大致的介绍以及简单的架构可以在那里看到，这里就不再重复。然后，最下面引用了两篇相关的论文。其中，第一篇是Facebook的Typeahead开发团队成员写的一个关于Typeahead的生命周期的文章，第二篇是几个THU大牛写的相关方案。我对这两篇文章做了简单的翻译，英语水平有限，凑合着看吧，传到百度文库了，地址：<a href="http://wenku.baidu.com/view/4845099e51e79b896802263f.html">第一篇</a>，<a href="http://wenku.baidu.com/view/34dd29add1f34693daef3e3f.html">第二篇</a>。</p>
+<p><img alt="" src="http://altynai-blog-images.qiniudn.com/2012/10/linkedin-cleo-1.png" /></p>
+<p>推荐的做法就是去运行一下它给的<a href="https://github.com/jingwei/cleo-prime">Demo</a>，其中有<code>Generic Typeahead</code>和<code>Network Typeahead</code>这两个部分，然后深入的去研究它的实现机理。</p>
+<p>好了，下面主要说一下对<code>Generic Typeahead</code>这块的理解（<code>Network Typeahead</code>这部分的道理与其基本一致）。</p>
+<p>假设现在有一些公司（Document）的列表，数据库中的每条记录就代表一个公司。每个公司都有自己的属性：编号（DocumentId），名称（Name ...</p>
+  </div>
+  <div id="article_more">
+  	<a class="button_more" href="http://localhost:8000/2012/10/linkedin-cleo/">More <i class=" icon-arrow-right"></i></a>
+  </div>
+</article>
+<hr />
+<article>
+  <div id="article_title">
+    <h1><a href="http://localhost:8000/2012/09/gan/">9月杂记</a></h1>
+  </div>
+  <div id="article_text">
+    <p>又到了一年一度的开学季，上周末回校的时候，路上看到依旧还是一些穿着拖鞋、拎着饭菜奔波于寝室和校外的老生。每年的这个时候是最热闹的，卖自行车的、卖电话卡的全部都凑过来了，能赚一笔，而且新生好骗嘛（我至今很后悔3年前来报到时买了一辆车，结果没几个月之后就被顺走了）。这周末回去就能看到遍地的新生了，我其实只想看看他们脸上的那种表情罢了，一定是满怀期待的那种吧，那种表情是最好看的，或许能看到自己3年前的样子。</p>
+<p>再过两周实习就满3个月了，每天的早出晚归早已成为了习惯。每天早上醒来的第一反应就是“干！怎么又要起床了！”，后来干脆把闹钟的提醒改成了“起床了啊魂淡！操！努力了啊！”，感觉好一点了。马上就要日短夜长了，冬天一来，早起又是一个大考验。对于这2个半月的感受，其实也没什么，最锻炼的还是心理吧。当你面对一个任务的时候，可能这个任务你很难胜任，一开始你就害怕，害怕做不好，害怕自己能力不足，以至于你埋头苦干的时候，你才突然捂头发现，心理默想：糟糕，我好像陷在其中了。这就是我最近的感受，今晚开会的时候被组老大看出来了。其实这是完全没必要害怕担心的事情，慢慢来，稳稳做好基础，一步一步来就是了，这和打比赛什么的不一样，不是被封锁在几个小时的时空内 ...</p>
+  </div>
+  <div id="article_more">
+  	<a class="button_more" href="http://localhost:8000/2012/09/gan/">More <i class=" icon-arrow-right"></i></a>
+  </div>
+</article>
+<hr />
+<article>
+  <div id="article_title">
+    <h1><a href="http://localhost:8000/2012/08/hdu-4391-paint-the-wall/">Hdu 4391 Paint The Wall 线段树(优化)</a></h1>
+  </div>
+  <div id="article_text">
+    <p><span style="color: #ff00ff;">【hdu
+4391】</span><a href="http://acm.hdu.edu.cn/showproblem.php?pid=4391">http://acm.hdu.edu.cn/showproblem.php?pid=4391</a></p>
+<p>【题意】100000个点，100000个操作，操作1把[l,r]的点涂成颜色z，操作2查询[l,r]内颜色为z的点个数，<code>0&lt;=z&lt;=2^31</code></p>
+<p>【思路】2012多校最后一场，当时是我上去敲的，我一开始的思路：线段树记录两个附加域
+ncolor表示这段的颜色（-1表示这段为多种颜色）nor表示整段所有颜色的或值。更新就不多说了，<code>push_up</code>和<code>push_down</code>函数不要写错就好。然后查询的时候，假设查询到一个线段，如果这个线段内部包含z这个颜色，那么一定满足<code>nor&amp;z&gt;=z</code>（都看成二进制就好理解了），交了之后T了。。。后来想了一下这个剪枝太他妈的不够了。。因为 ...</p>
+  </div>
+  <div id="article_more">
+  	<a class="button_more" href="http://localhost:8000/2012/08/hdu-4391-paint-the-wall/">More <i class=" icon-arrow-right"></i></a>
+  </div>
+</article>
+<hr />
+<article>
+  <div id="article_title">
+    <h1><a href="http://localhost:8000/2012/08/hdu-4389/">Hdu 4389 X mod f(x) 数位DP</a></h1>
+  </div>
+  <div id="article_text">
+    <p><span style="color: #ff00ff;">【hdu
+4389】</span><a href="http://acm.hdu.edu.cn/showproblem.php?pid=4389">http://acm.hdu.edu.cn/showproblem.php?pid=4389</a></p>
+<p>【题意】f(x)表示x各位的数字和. 给定<code>1&lt;=L&lt;=R&lt;=10^9</code>, 求[L,R]范围内满足<code>x%f(x)=0</code>的个数. </p>
+<p>【想法】由于L,R的范围很大, 所以很能想到答案是<code>funcation(R)-funcation(L-1)</code>, 然后就是想办法求funcation. 可以观察到<code>1&lt;=f(x)&lt;=81</code>, 所以一开始想的是枚举每个<code>y=f(x)</code>,每次预处理<code>dp ...</code></p>
+  </div>
+  <div id="article_more">
+  	<a class="button_more" href="http://localhost:8000/2012/08/hdu-4389/">More <i class=" icon-arrow-right"></i></a>
+  </div>
+</article>
+<hr />
+<article>
+  <div id="article_title">
+    <h1><a href="http://localhost:8000/2012/06/25-29insodao/">实习一周的感受</a></h1>
+  </div>
+  <div id="article_text">
+    <p>本来说是7月2号才去上班的，后来觉得在家实在太虚度时光了，所以主动提早到6月25号去了。</p>
+<p>有点一不错的是离家不远，下班赶得上公交车的话7点左右就能到家了，也就是这周的晚饭都是7点以后吃的，也就是以后的晚饭。</p>
+<p>如果回校的话，估计还得迟半把个小时，想想就觉得胃疼。</p>
+<p>我很好奇这群人的早饭都吃了什么，12点的时候竟然木有一个人想去吃饭的。一般过会儿才有人站起来说要不吃饭去吧，才陆陆续续分波出去吃！还有长期叫外卖的！这是死宅的行为啊！中午至少得出去透透气啊！整天在空调房里多不好！吐槽下每天的中饭，贵！第一天去的时候不懂行情，点了1荤2素1汤！擦！20块！太坑了！不过味道还算凑合。之后的几天一直省着点吃，一菜一汤差不多就够了=。=
+那些人都2荤2素的吃的！你们到底赚多少一个月啊！2荤2素很贵的好不好！ T T</p>
+<p>说说工作吧，这一周其实也就去打了打酱油。那边安排了小欧老师（几天相处下来，感觉小欧老师人很好，跟我一样有点腼腆，哈哈~！）做我的导师，我的工作就是帮他做做收集一些资料的工作，具体一点就是抓网页上的数据。他也没规定怎么做，只要把最后的数据给他看就行了。所以我直接乱搞了，用python抓网页源代码，然后正则匹配出关键字做记录，生成sql语句导到数据库。中间遇到了有些错误的数据 ...</p>
+  </div>
+  <div id="article_more">
+  	<a class="button_more" href="http://localhost:8000/2012/06/25-29insodao/">More <i class=" icon-arrow-right"></i></a>
+  </div>
+</article>
+<hr />
+<article>
+  <div id="article_title">
+    <h1><a href="http://localhost:8000/2012/05/sth-in-may/">我也有五月病</a></h1>
+  </div>
+  <div id="article_text">
+    <p>我意识到自己的懒了，上一篇的生活小记录竟然还是整整一个月前写的。</p>
+<p>在这一个月内，发生了很多事情，我只能默默感叹生活里的剧情实在是比电视剧里的剧情狗血的多，也或许是我不怎么看电视剧的缘故吧。</p>
+<p>我有时候会想，5月是不是每年中最繁忙的月份，也不知道是哪些因素给我带来的紧张和压迫感，以至于有时候突然觉得呼吸都变得很困难，像是有个人在后面掐住了我的脖子一样。</p>
+<p>我反感现在生活的不规律，和我之前想的有一定的差别，虽有相似的部分，但剩余的不相似则是我讨厌最近生活的一个原因。</p>
+<p>好吧好吧，我需要静下心来，想想该怎么怎么利用好时间。也不知从什么时候开始，我染上了发呆的毛病，有时候就傻傻的坐在哪里，眼睛盯着一样东西看，可我完全没把心放在那儿，等我回过神来的时候，就感觉像是穿越了很长时间来到这里一样。我记得高中的时候，某徐姓同桌曾经和我说过他的经历：有次他一个人在家，躺在床上，花了几个小时，就傻呆呆的看着房间的天花板，啥也没干。我想，再这么下去，我也要到这种境界了。</p>
+<p>杭州炎热的天气好似没有一个尽头，眼看着夏天就要来了，或许可以说已经来了。我想，夏天唯一能让我高兴起来的东西想必只有空调和西瓜了，嗯，如果只能选一样，空调？不，我要西瓜！</p>
+<p>我能想象到暑假的生活了，早上早早的去赶公交，然后花2个小时左右到城站那边的实习公司打酱油（弱弱的求杭州的地铁赶紧造啊！），然后晚上再带着疲惫坐回小和山 ...</p>
+  </div>
+  <div id="article_more">
+  	<a class="button_more" href="http://localhost:8000/2012/05/sth-in-may/">More <i class=" icon-arrow-right"></i></a>
+  </div>
+</article>
 
-        <footer id="contentinfo" class="body">
-                <address id="about" class="vcard body">
-                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
-                </address><!-- /#about -->
+    <footer>
+	
+<div id="paginator">
+	<div id="next_page_left">
+		<a href="http://localhost:8000/index2.html" class="button_accent"><i class="icon-arrow-left"></i> Older Posts</a>
+	</div>
 
-                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
-        </footer><!-- /#contentinfo -->
+</div>
+    </footer>
 
+    <div id="ending_message">
+      <p>&copy Geoffrey Gimse. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme adapted from pelican-svbhack available on <a href="https://github.com/giulivo/pelican-svbhack" target="_blank">github</a>. Many of the images used on this site are in the Public Domain and available from <a href="http://openclipart.org" target="_blank">Openclipart</a>.</p>
+    </div>
+  </main>
 </body>
 </html>

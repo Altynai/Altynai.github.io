@@ -17,7 +17,7 @@
 
 
   <title>
-Tags  </title>
+Category: ACM  </title>
 
 </head>
 
@@ -46,29 +46,36 @@ Tags  </title>
 
   <main>
      <header>
-		<p><a href="http://localhost:8000">Sideways</a>
-          </p>
+<p>Category: ACM
+</p>
     </header>
 <article>
+  <div id="article_title">
+    <h1><a href="http://localhost:8000/2012/02/hdu-2513-dp/">Hdu 2513 DP</a></h1>
+  </div>
   <div id="article_text">
-    <ul>
-      <li><a href="http://localhost:8000/tag/DP.html">DP</a></li>
-      <li><a href="http://localhost:8000/tag/Redis.html">Redis</a></li>
-      <li><a href="http://localhost:8000/tag/ZOJ.html">ZOJ</a></li>
-      <li><a href="http://localhost:8000/tag/C/C++.html">C/C++</a></li>
-      <li><a href="http://localhost:8000/tag/Java.html">Java</a></li>
-      <li><a href="http://localhost:8000/tag/Nginx.html">Nginx</a></li>
-      <li><a href="http://localhost:8000/tag/HDU.html">HDU</a></li>
-      <li><a href="http://localhost:8000/tag/Django.html">Django</a></li>
-      <li><a href="http://localhost:8000/tag/Python.html">Python</a></li>
-      <li><a href="http://localhost:8000/tag/Life.html">Life</a></li>
-      <li><a href="http://localhost:8000/tag/ACM.html">ACM</a></li>
-    </ul>
+    <p><strong><span style="color: #ff00ff;">【Hdu
+2513】</span></strong>http://acm.hdu.edu.cn/showproblem.php?pid=2513  </p>
+<p>【题意】给你20*20的格子（一个蛋糕），有些格子上有樱桃，让你把蛋糕切成若干块，每块是矩形或者正方形，每块蛋糕上有且只有一个樱桃，求总的切的长度最小。  </p>
+<p>【想法】我的想法就是用一个状态dp[i][j][x][y]表示切（i,j）到（i+x-1,j+y-1）这个矩形的最小值。然后分情况讨论这个矩形。<br />
+1.矩形内没有樱桃<br />
+2.矩形内只有一个樱桃<br />
+3.矩形是1xN或者Nx1的规模<br />
+4.其他情况</p>
+<p>其实有几种情况可以合起来讨论的。  </p>
+<p>第4中情况只要枚举切行和切列的情况就可以了，我觉得要注意的地方就是切行和切列的时候要保证2块蛋糕上分别至少有1个樱桃，这样切才是合法的。</p>
+<p>最后很容易错的地方就是x,y这两重循环要写在最外面 ...</p>
+  </div>
+  <div id="article_more">
+  	<a class="button_more" href="http://localhost:8000/2012/02/hdu-2513-dp/">More <i class=" icon-arrow-right"></i></a>
   </div>
 </article>
 
     <footer>
 	
+<div id="paginator">
+
+</div>
     </footer>
 
     <div id="ending_message">
