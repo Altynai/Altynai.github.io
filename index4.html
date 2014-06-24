@@ -53,6 +53,27 @@ Sideways  </title>
     </header>
 <article>
   <div id="article_title">
+    <h1><a href="http://Altynai.me/2011/09/hdu-4016/">Hdu 4016</a></h1>
+  </div>
+  <div id="article_text">
+    <p>Asia Regional Shanghai Site —— Warmup的第6题，在比赛的时候，一直想不出什么好的方法，但知道搜索应该可以过的，学校的一队拿了这题的一血，后来也没几个队过这题。</p>
+<blockquote>
+<p>其实&amp;有一个特点，那就是A&amp;B=C，其中C≤min(A,B)。</p>
+</blockquote>
+<p>那么，我们可以贪心的想，取小的数(高位都为0了)得到的结果肯定更加接近最优解，但不并一定就是取最小的k个数。</p>
+<p>如果暴力的去dfs，复杂度就是<code>2^40</code>，这明显是too simple了。</p>
+<p>所以要剪枝，再想一下&amp;的那个性质，假如你递归下去，得到的值肯定是要比当前递归到的层的值还要小的，也就是说，我们不必一定要等到递归到选完k个数了的时候再更新answer，直接在当前递归层更新就可以了。</p>
+<p>光光有这么一个剪枝还是不够的，还是利用这个性质，假设我们现在递归到第id个数，如果我把id\~n这些数全&amp;进来，如果此时的结果还是≥answer，那么就可以剪枝了。</p>
+<blockquote>
+<p>证明也很简单：如果id ...</p></blockquote>
+  </div>
+  <div id="article_more">
+  	<a class="button_more" href="http://Altynai.me/2011/09/hdu-4016/">More <i class=" icon-arrow-right"></i></a>
+  </div>
+</article>
+<hr />
+<article>
+  <div id="article_title">
     <h1><a href="http://Altynai.me/2011/09/new-term/">New term</a></h1>
   </div>
   <div id="article_text">

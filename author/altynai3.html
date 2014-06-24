@@ -51,6 +51,27 @@ Author: Altynai  </title>
     </header>
 <article>
   <div id="article_title">
+    <h1><a href="http://Altynai.me/2011/12/zjut-1783/">ZJUT 1783 线段树 lazy标记</a></h1>
+  </div>
+  <div id="article_text">
+    <p><span style="color: #ff00ff;">【ZJUT
+1783】</span><a href="http://acm.zjut.edu.cn/ShowProblem.aspx?ShowID=1783">http://acm.zjut.edu.cn/ShowProblem.aspx?ShowID=1783</a></p>
+<p>今天圣诞赛现场赛的B题。坑爹的<code>push_down</code>函数写错了，卡了一个小时。</p>
+<p>题目的意思很简单，就是在某个区间插入一个等差数列，然后查询某区间的和，所以我想到的是用low和up来维护等差数列的首项和末项，因为对于一个固定的区间，这个等差数列是唯一的。然后就是要lazy标记，方法和经典的"成段更新求和"类似，关键还是<code>push_down</code>函数千万不能写错！</p>
+<div class="highlight"><pre><span class="cp">#define N 100005</span>
+<span class="cp">#define ll long long</span>
+<span class="cp">#define eps 1e-7</span>
+
+<span class="cp">#define lchild(id) (id&lt;&lt;1)</span>
+<span class="cp">#define rchild(id) ((id&lt;&lt;1)|1 ...</span></pre></div>
+  </div>
+  <div id="article_more">
+  	<a class="button_more" href="http://Altynai.me/2011/12/zjut-1783/">More <i class=" icon-arrow-right"></i></a>
+  </div>
+</article>
+<hr />
+<article>
+  <div id="article_title">
     <h1><a href="http://Altynai.me/2011/11/hdu-4121-4123/">2011 Asia Fuzhou Regional A题 & B题 & C题</a></h1>
   </div>
   <div id="article_text">
@@ -230,27 +251,6 @@ X 2n）</p>
   </div>
   <div id="article_more">
   	<a class="button_more" href="http://Altynai.me/2011/09/zjut-naonayang/">More <i class=" icon-arrow-right"></i></a>
-  </div>
-</article>
-<hr />
-<article>
-  <div id="article_title">
-    <h1><a href="http://Altynai.me/2011/09/hdu-4016/">Hdu 4016</a></h1>
-  </div>
-  <div id="article_text">
-    <p>Asia Regional Shanghai Site —— Warmup的第6题，在比赛的时候，一直想不出什么好的方法，但知道搜索应该可以过的，学校的一队拿了这题的一血，后来也没几个队过这题。</p>
-<blockquote>
-<p>其实&amp;有一个特点，那就是A&amp;B=C，其中C≤min(A,B)。</p>
-</blockquote>
-<p>那么，我们可以贪心的想，取小的数(高位都为0了)得到的结果肯定更加接近最优解，但不并一定就是取最小的k个数。</p>
-<p>如果暴力的去dfs，复杂度就是<code>2^40</code>，这明显是too simple了。</p>
-<p>所以要剪枝，再想一下&amp;的那个性质，假如你递归下去，得到的值肯定是要比当前递归到的层的值还要小的，也就是说，我们不必一定要等到递归到选完k个数了的时候再更新answer，直接在当前递归层更新就可以了。</p>
-<p>光光有这么一个剪枝还是不够的，还是利用这个性质，假设我们现在递归到第id个数，如果我把id\~n这些数全&amp;进来，如果此时的结果还是≥answer，那么就可以剪枝了。</p>
-<blockquote>
-<p>证明也很简单：如果id ...</p></blockquote>
-  </div>
-  <div id="article_more">
-  	<a class="button_more" href="http://Altynai.me/2011/09/hdu-4016/">More <i class=" icon-arrow-right"></i></a>
   </div>
 </article>
 
