@@ -14,7 +14,6 @@
   <meta name="author" content="Altynai">
   <meta name="description" content="Posts and writings by Altynai">
   <link rel="shortcut icon" href="http://Altynai.me/theme/images/favicon.ico" type="image/x-icon" />
-  <link href="http://Altynai.me/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Sideways Full RSS Feed" />
 
 <meta name="keywords" content="Nginx, C/C++">
 
@@ -35,6 +34,7 @@ Nginx限制模块的共享内存  </title>
 	<ul id="social_list">
         <li><a href="https://github.com/Altynai" rel='me' target="_blank"><i class="icon-github icon-2x"></i></a></li>
         <li><a href="http://weibo.com/u/2164187874" rel='me' target="_blank"><i class="icon-weibo icon-2x"></i></a></li>
+        <li><a href="http://Altynai.me/feeds/all.rss.xml" rel='me' target="_blank"><i class="icon-rss icon-2x"></i></a></li>
 	</ul>
       </div>
       <ul>
@@ -151,8 +151,7 @@ Nginx限制模块的共享内存  </title>
 - 1，如果连接数为0，则将其从树中删除，释放结点内存。</p>
 <p>这样的好处是，在某些恶意IP尝试疯狂发请求时，其并发连接数始终维持在limit，能直接快速的503，根本不需要执行这个请求，而对那些正常的连接数较小的IP并不造成影响。</p>
 <p>而<code>limit_req_zone</code>的逻辑有点麻烦，看明白了再回来补充。</p>
-<p>暂时先写这么个大概，希望对你有用。</p>
-<p>豆瓣9点验证：doubanclaim6ab94107779339c8</p><script type= "text/javascript">
+<p>暂时先写这么个大概，希望对你有用。</p><script type= "text/javascript">
     if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
         var mathjaxscript = document.createElement('script');
         mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
